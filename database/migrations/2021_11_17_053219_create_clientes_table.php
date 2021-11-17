@@ -6,26 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateClientesTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
+
+    public function up(){
         Schema::create('clientes', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->id('id_cliente');
+            $table->string('nombre');
+            $table->string('razon_social');
+            $table->string('nit_cc')->unique();
+            $table->string('telefono');
+            $table->string('ciudad');
+            $table->string('barrio');
+            $table->string('direccion');
+            $table->string('encargado');
+            $table->string('celular', 11);
+            $table->string('correo')->unique();
+            $table->string('url_imagen');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('clientes');
     }
 }

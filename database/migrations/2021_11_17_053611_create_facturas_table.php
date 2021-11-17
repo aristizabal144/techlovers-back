@@ -6,26 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateFacturasTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
+
+    public function up(){
         Schema::create('facturas', function (Blueprint $table) {
-            $table->id();
+            $table->id('id_factura');
+            $table->unsignedBigInteger('id_cliente_fk');
+            $table->integer('numero_cotizacion');
+            $table->date('fecha');
+            //Preguntarle a cristian cual es la precision que se le asignara.
+            $table->float('total_descuento');
+            $table->float('total_factura');
+            $table->text('descripcion');
             $table->timestamps();
+        });
+        Schema::table('facturas', function(Blueprint $table){
+            $table->foreign('id_cliente_fk')->references('id_cliente')->on('clientes');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
+    public function down(){
         Schema::dropIfExists('facturas');
     }
 }
