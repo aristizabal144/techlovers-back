@@ -8,9 +8,9 @@ class Cliente extends Model
 {
     public $table = 'clientes';
 
-    protected $primaryKey = 'id_cliente';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id_cliente', 'nombre', 'razon_social', 'nit_cc', 'telefono', 'ciudad', 'barrio', 'direccion', 'encargado', 'celular', 'correo', 'url_imagen'
+        'id', 'nombre', 'razon_social', 'nit_cc', 'telefono', 'ciudad', 'barrio', 'direccion', 'encargado', 'celular', 'correo', 'url_imagen'
     ];
 }

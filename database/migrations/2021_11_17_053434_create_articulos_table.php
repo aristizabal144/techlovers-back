@@ -14,7 +14,7 @@ class CreateArticulosTable extends Migration
     public function up()
     {
         Schema::create('articulos', function (Blueprint $table) {
-            $table->id('id_articulos');
+            $table->id('id');
             $table->unsignedBigInteger('id_categoria_fk');
             $table->string('referencia');
             $table->float('valor_articulo');
@@ -26,7 +26,7 @@ class CreateArticulosTable extends Migration
             $table->timestamps();
         });
         Schema::table('articulos', function(Blueprint $table){
-            $table->foreign('id_categoria_fk')->references('id_categorias')->on('categorias');
+            $table->foreign('id_categoria_fk')->references('id')->on('categorias');
         });
     }
 

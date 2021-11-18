@@ -14,7 +14,7 @@ class CreateCategoriasTable extends Migration
     public function up()
     {
         Schema::create('categorias', function (Blueprint $table) {
-            $table->id('id_categorias');
+            $table->id('id');
             $table->string('nombre');
             $table->text('descripcion');
             //Por defecto al registrar una categoria sea true (activa), si no entonces para que la activa :/

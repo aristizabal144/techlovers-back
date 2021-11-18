@@ -8,9 +8,9 @@ class Consolidado extends Model
 {
     public $table = 'consolidados';
 
-    protected $primaryKey = 'idConsolidados';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id_consolidados','referencia_consolidado','fecha_pedido','fecha_salida','fecha_llegada','valor_flete','valor_RMB','metros_cubicos','subtotal_RMB','total'
+        'id','referencia_consolidado','fecha_pedido','fecha_salida','fecha_llegada','valor_flete','valor_RMB','metros_cubicos','subtotal_RMB','total'
     ];
 }

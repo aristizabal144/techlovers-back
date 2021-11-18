@@ -9,7 +9,7 @@ class CreateFacturasTable extends Migration
 
     public function up(){
         Schema::create('facturas', function (Blueprint $table) {
-            $table->id('id_factura');
+            $table->id('id');
             $table->unsignedBigInteger('id_cliente_fk');
             $table->integer('numero_cotizacion');
             $table->date('fecha');
@@ -20,7 +20,7 @@ class CreateFacturasTable extends Migration
             $table->timestamps();
         });
         Schema::table('facturas', function(Blueprint $table){
-            $table->foreign('id_cliente_fk')->references('id_cliente')->on('clientes');
+            $table->foreign('id_cliente_fk')->references('id')->on('clientes');
         });
     }
 

@@ -14,7 +14,7 @@ class CreateConsolidadosTable extends Migration
     public function up()
     {
         Schema::create('consolidados', function (Blueprint $table) {
-            $table->id('id_consolidados');
+            $table->id('id');
             $table->string('referencia_consolidado');
             $table->date('fecha_pedido');
             $table->date('fecha_salida');

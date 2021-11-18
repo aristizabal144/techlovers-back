@@ -14,7 +14,7 @@ class CreateConsolidadoArticulosTable extends Migration
     public function up()
     {
         Schema::create('consolidado_articulos', function (Blueprint $table) {
-            $table->id('id_consolidado_articulos');
+            $table->id('id');
             $table->unsignedBigInteger('id_consolidado_fk');
             $table->unsignedBigInteger('id_articulo_fk');
             $table->integer('QTY');
@@ -32,8 +32,8 @@ class CreateConsolidadoArticulosTable extends Migration
         });
         
         Schema::table('consolidado_articulos', function(Blueprint $table){
-            $table->foreign('id_consolidado_fk')->references('id_consolidados')->on('consolidados');
-            $table->foreign('id_articulo_fk')->references('id_articulos')->on('articulos');
+            $table->foreign('id_consolidado_fk')->references('id')->on('consolidados');
+            $table->foreign('id_articulo_fk')->references('id')->on('articulos');
         });
     }
 

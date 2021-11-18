@@ -14,7 +14,7 @@ class CreateFacturaArticulosTable extends Migration
     public function up()
     {
         Schema::create('factura_articulos', function (Blueprint $table) {
-            $table->id('id_factura_articulos');
+            $table->id('id');
             $table->unsignedBigInteger('id_factura_fk');
             $table->unsignedBigInteger('id_articulo_fk');
             $table->integer('cantidad');
@@ -25,8 +25,8 @@ class CreateFacturaArticulosTable extends Migration
             $table->timestamps();
         });
         Schema::table('factura_articulos', function(Blueprint $table){
-            $table->foreign('id_factura_fk')->references('id_factura')->on('facturas');
-            $table->foreign('id_articulo_fk')->references('id_articulos')->on('articulos');
+            $table->foreign('id_factura_fk')->references('id')->on('facturas');
+            $table->foreign('id_articulo_fk')->references('id')->on('articulos');
         });
     }
 

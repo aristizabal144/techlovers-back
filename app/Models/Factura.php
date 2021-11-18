@@ -8,9 +8,9 @@ class Factura extends Model
 {
     public $table = 'facturas';
 
-    protected $primaryKey = "id_factura";
+    protected $primaryKey = "id";
 
     protected $fillable = [
-        'id_factura', 'id_cliente_fk', 'numero_cotizacion', 'fecha', 'total_descuento', 'total_factura', 'descripcion'
+        'id', 'id_cliente_fk', 'numero_cotizacion', 'fecha', 'total_descuento', 'total_factura', 'descripcion'
     ];
 }
