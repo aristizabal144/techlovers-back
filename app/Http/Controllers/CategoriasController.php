@@ -2,84 +2,112 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\categorias;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoriasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        try {
+            $categories = Categoria::all();
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Las categorias se muestran',
+                'data' => $categories
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Las categorias no se muestran'
+            ]);
+        }        
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try {
+            $categories = new Categoria;
+
+            $categories->nombre = $request->nombre;
+            $categories->descripcion = $request->descripcion;
+            $categories->estado = $request->estado;
+
+            $categories->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La categoria fue registrada de correctamente',
+                'data' => $categories
+            ]);
+
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El registro no se pudo realizar de manera correcta'
+            ]);
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
+        try {
+            $categories = Categoria::find($id);
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La categoria seleccionada, se ha encontrado',
+                'data' => $categories
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'La categoria seleccionada NO, se ha encontrado'
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\categorias  $categorias
-     * @return \Illuminate\Http\Response
-     */
-    public function show(categorias $categorias)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $categories = Categoria::findOrFail($id);
+
+            $categories->nombre = $request->nombre;
+            $categories->descripcion = $request->descripcion;
+            $categories->estado = $request->estado;
+    
+            $categories->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La categoria se actualizo de manera exitosa',
+                'data' => $categories
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar la categoria'
+            ]);
+        }
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\categorias  $categorias
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(categorias $categorias)
+    public function delete($id)
     {
-        //
-    }
+        try{
+            DB::table('categorias')->delete($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\categorias  $categorias
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, categorias $categorias)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\categorias  $categorias
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(categorias $categorias)
-    {
-        //
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La categoria se ha eliminado',
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error eliminando la categoria'
+            ]);
+        }
     }
 }

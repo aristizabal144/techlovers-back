@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Http\Controllers\CategoriasController;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -21,3 +23,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('auth', ['as' => 'auth', 'uses' => 'UsuariosController@showAuth']);
 });
 
+$router->get('/categorie', 'CategoriasController@index');
+$router->get('/categorie/{id}', 'CategoriasController@show');
+$router->post('/categorie', 'CategoriasController@create');
+$router->put('/categorie/{id}', 'CategoriasController@update');
+$router->delete('/categorie/{id}', 'CategoriasController@delete');
