@@ -16,7 +16,7 @@ class CreateCategoriasTable extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->id('id');
             $table->string('nombre');
-            $table->text('descripcion');
+            $table->text('descripcion')->nullable();
             //Por defecto al registrar una categoria sea true (activa), si no entonces para que la activa :/
             $table->boolean('estado')->default();
             $table->timestamps();

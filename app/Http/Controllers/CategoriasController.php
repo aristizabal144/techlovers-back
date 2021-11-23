@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\DB;
 class CategoriasController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $categories = Categoria::all();
+            $categories = Categoria::paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las categorias se muestran',
@@ -110,4 +110,6 @@ class CategoriasController extends Controller
             ]);
         }
     }
+    
+    
 }
