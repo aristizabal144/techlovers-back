@@ -13,6 +13,11 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
+$router->post('user', ['as' => 'user.store', 'uses' => 'UsuariosController@store']);
+
+$router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->get('logout', ['as' => 'logout', 'uses' => 'UsuariosController@logout']);
+    $router->get('auth', ['as' => 'auth', 'uses' => 'UsuariosController@showAuth']);
 });
+
