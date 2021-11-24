@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateArticulosTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+
     public function up()
     {
         Schema::create('articulos', function (Blueprint $table) {
             $table->id('id');
             $table->unsignedBigInteger('id_categoria_fk');
             $table->string('referencia');
-            $table->float('valor_articulo');
-            $table->float('valor_articulo_total');
-            $table->integer('porcentaje');
-            $table->float('valor_porcantaje');
-            $table->float('valor_venta');
+            $table->string('nombre');
+            $table->integer('valor_entra');
+            $table->integer('porcentaje_venta');
+            $table->integer('valor_venta');
+            $table->integer('cantidad');
+            $table->text('descripcion');
             $table->string('urlImagen');
             $table->timestamps();
         });

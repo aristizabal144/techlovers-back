@@ -29,4 +29,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/categorie', 'CategoriasController@create');
     $router->put('/categorie/{id}', 'CategoriasController@update');
     $router->delete('/categorie/{id}', 'CategoriasController@delete');
+
+    //PRODUCTS - ARTICULOS
+    $router->get('/product', 'ArticulosController@index');
+    $router->get('/product/{id}', 'ArticulosController@show');
+    $router->post('/product', 'ArticulosController@create');
+    $router->put('/product/{id}', 'ArticulosController@update');
+    $router->delete('/product/{id}', 'ArticulosController@delete');
 });

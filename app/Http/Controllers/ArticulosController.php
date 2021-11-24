@@ -2,84 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\articulos;
+use App\Models\Articulo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ArticulosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        try {
+            $products = Articulo::paginate($request->input('size'));
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los productos se muestran',
+                'data' => $products
+            ]);
+        } catch (\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los productos no se muestran'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try {
+            $products = new Articulo;
+
+            $products->referencia = $request->referencia;
+            $products->nombre = $request->nombre;
+            $products->valor_entra = $request->valor_entra;
+            $products->porcentaje_venta = $request->porcentaje_venta;
+            $products->porcentaje_venta = $request->porcentaje_venta;
+            $products->valor_venta = $request->valor_venta;
+            $products->cantidad = $request->cantidad;
+            $products->descripcion = $request->descripcion;
+            $products->urlImagen = $request->urlImagen;
+
+            $products->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El producto fue registrado de correcta',
+                'data' => $products
+            ]);
+
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El producto no se pudo realizar de manera correcta'
+            ]);
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
+        try {
+            $products = Articulo::find($id);
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El producto seleccionado, se ha encontrado',
+                'data' => $products
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El producto seleccionada NO, se ha encontrado'
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\articulos  $articulos
-     * @return \Illuminate\Http\Response
-     */
-    public function show(articulos $articulos)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $products = Articulo::findOrFail($id);
+
+            $products->referencia = $request->referencia;
+            $products->nombre = $request->nombre;
+            $products->valor_entra = $request->valor_entra;
+            $products->porcentaje_venta = $request->porcentaje_venta;
+            $products->porcentaje_venta = $request->porcentaje_venta;
+            $products->valor_venta = $request->valor_venta;
+            $products->cantidad = $request->cantidad;
+            $products->descripcion = $request->descripcion;
+            $products->urlImagen = $request->urlImagen;
+    
+            $products->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El producto se actualizo de manera exitosa',
+                'data' => $products
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar el producto'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\articulos  $articulos
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(articulos $articulos)
+    public function destroy($id)
     {
-        //
-    }
+        try{
+            DB::table('articulos')->delete($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\articulos  $articulos
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, articulos $articulos)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\articulos  $articulos
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(articulos $articulos)
-    {
-        //
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El producto se ha eliminado correctamente',
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error eliminando el producto'
+            ]);
+        }
     }
 }
