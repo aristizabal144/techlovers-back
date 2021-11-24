@@ -44,6 +44,7 @@ class CategoriasController extends Controller
             ]);
 
         } catch(\Exception $e){
+            console.log($e);
             return response()->json([
                 'is_error' => true,
                 'message' => 'El registro no se pudo realizar de manera correcta'
