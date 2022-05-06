@@ -11,7 +11,7 @@ class CreateArticulosTable extends Migration
     {
         Schema::create('articulos', function (Blueprint $table) {
             $table->id('id');
-            $table->unsignedBigInteger('id_categoria_fk');
+            $table->unsignedBigInteger('id_categoria');
             $table->string('referencia');
             $table->string('nombre');
             $table->integer('valor_entra');
@@ -23,7 +23,7 @@ class CreateArticulosTable extends Migration
             $table->timestamps();
         });
         Schema::table('articulos', function(Blueprint $table){
-            $table->foreign('id_categoria_fk')->references('id')->on('categorias');
+            $table->foreign('id_categoria')->references('id')->on('categorias');
         });
     }
 

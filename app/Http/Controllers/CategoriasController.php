@@ -12,7 +12,13 @@ class CategoriasController extends Controller
     public function index(Request $request)
     {
         try {
-            $categories = Categoria::paginate($request->input('size'));
+            if($request->input('size') != null){
+                $categories = Categoria::paginate($request->input('size'));
+                
+            }else{
+                $categories = Categoria::all();
+            }
+
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las categorias se muestran',

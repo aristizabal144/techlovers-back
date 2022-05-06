@@ -31,14 +31,14 @@ class ArticulosController extends Controller
         try {
             $products = new Articulo;
 
-            $products->referencia = $request->referencia;
-            $products->nombre = $request->nombre;
-            $products->valor_entra = $request->valor_entra;
-            $products->porcentaje_venta = $request->porcentaje_venta;
-            $products->porcentaje_venta = $request->porcentaje_venta;
-            $products->valor_venta = $request->valor_venta;
-            $products->cantidad = $request->cantidad;
-            $products->descripcion = $request->descripcion;
+            $products->id_categoria = $request->categoryId;
+            $products->referencia = $request->reference;
+            $products->nombre = $request->name;
+            $products->valor_entra = $request->entryValue;
+            $products->porcentaje_venta = $request->salePercentage;
+            $products->valor_venta = $request->saleValue;
+            $products->cantidad = $request->amount;
+            $products->descripcion = $request->description;
             $products->urlImagen = $request->urlImagen;
 
             $products->save();
@@ -52,7 +52,8 @@ class ArticulosController extends Controller
         } catch(\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'El producto no se pudo realizar de manera correcta'
+                'msg_error' => $e,
+                'message' => 'El producto no se pudo registrar de manera correcta'
             ]);
         }
 
