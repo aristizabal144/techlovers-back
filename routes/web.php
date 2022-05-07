@@ -35,5 +35,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/product/{id}', 'ArticulosController@show');
     $router->post('/product', 'ArticulosController@create');
     $router->put('/product/{id}', 'ArticulosController@update');
-    $router->delete('/product/{id}', 'ArticulosController@delete');
+    $router->delete('/product/{id}', 'ArticulosController@destroy');
 });
