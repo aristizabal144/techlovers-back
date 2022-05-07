@@ -10,7 +10,30 @@ class Cliente extends Model
 
     protected $primaryKey = 'id';
 
+    // ------------- New schema
     protected $fillable = [
-        'id', 'nombre', 'razon_social', 'nit_cc', 'telefono', 'ciudad', 'barrio', 'direccion', 'encargado', 'celular', 'correo', 'url_imagen'
+        'id',
+        'identificacion',
+        'nombre',
+        'telefono_fijo',
+        'celular',
+        'correo',
+        'descripcion'
     ];
+
+    // ------------- Old Schema
+    /* protected $fillable = [
+        'id',
+        'nombre',
+        'razon_social',
+        'nit_cc',
+        'telefono',
+        'ciudad',
+        'barrio',
+        'direccion',
+        'encargado',
+        'celular',
+        'correo',
+        'url_imagen'
+    ]; */
 }
