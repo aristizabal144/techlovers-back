@@ -7,79 +7,111 @@ use Illuminate\Http\Request;
 
 class ClientesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index(Request $request)
     {
-        //
+        try {
+            $clients = clientes::paginate($request->input('size'));
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los clientes se muestran',
+                'data' => $clients
+            ]);
+        } catch (\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los clientes no se muestran'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try {
+            $client = new clientes;
+
+            $client->id = $request->id;
+            $client->identificacion = $request->identificacion;
+            $client->nombre = $request->nombre;
+            $client->telefono_fijo = $request->telefono_fijo;
+            $client->celular = $request->celular;
+            $client->correo = $request->correo;
+            $client->descripcion = $request->descripcion;
+    
+            $client->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El cliente fue registrado de correcta',
+                'data' => $client
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El cliente no se pudo registrar de manera correcta'
+            ]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
+        try {
+            $client = clientes::find($id);
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El cliente seleccionado, se ha encontrado',
+                'data' => $client
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El cliente seleccionada NO, se ha encontrado'
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\clientes  $clientes
-     * @return \Illuminate\Http\Response
-     */
-    public function show(clientes $clientes)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $client = clientes::findOrFail($id);
+
+            $client->id = $request->id;
+            $client->identificacion = $request->identificacion;
+            $client->nombre = $request->nombre;
+            $client->telefono_fijo = $request->telefono_fijo;
+            $client->celular = $request->celular;
+            $client->correo = $request->correo;
+            $client->descripcion = $request->descripcion;
+    
+            $client->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El cliente se actualizo de manera exitosa',
+                'data' => $client
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar el cliente'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\clientes  $clientes
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(clientes $clientes)
+    public function destroy($id)
     {
-        //
-    }
+        try{
+            DB::table('clientes')->delete($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\clientes  $clientes
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, clientes $clientes)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\clientes  $clientes
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(clientes $clientes)
-    {
-        //
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El cliente se ha eliminado correctamente',
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error eliminando el cliente'
+            ]);
+        }
     }
 }
