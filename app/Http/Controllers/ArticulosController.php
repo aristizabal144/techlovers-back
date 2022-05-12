@@ -79,12 +79,11 @@ class ArticulosController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $products = Articulo::findOrFail($id);
+            $products = Articulo::find($id);
 
             $products->referencia = $request->referencia;
             $products->nombre = $request->nombre;
             $products->valor_entra = $request->valor_entra;
-            $products->porcentaje_venta = $request->porcentaje_venta;
             $products->porcentaje_venta = $request->porcentaje_venta;
             $products->valor_venta = $request->valor_venta;
             $products->cantidad = $request->cantidad;
