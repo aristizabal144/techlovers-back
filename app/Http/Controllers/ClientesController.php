@@ -15,7 +15,7 @@ class ClientesController extends Controller
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los clientes se muestran',
-                'data' => $products
+                'data' => $clients
             ]);
         } catch (\Exception $e){
             return response()->json([
@@ -98,7 +98,7 @@ class ClientesController extends Controller
         }
     }
 
-    public function destroy(clientes $clientes)
+    public function destroy($id)
     {
         try{
             DB::table('clientes')->delete($id);
