@@ -3,6 +3,9 @@
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\ArticulosController;
+use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\AlmacenesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +39,18 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/product', 'ArticulosController@create');
     $router->put('/product/{id}', 'ArticulosController@update');
     $router->delete('/product/{id}', 'ArticulosController@destroy');
+
+    //CLIENTES
+    $router->get('/client', 'ClientesController@index');
+    $router->get('/client/{id}', 'ClientesController@show');
+    $router->post('/client', 'ClientesController@create');
+    $router->put('/client/{id}', 'ClientesController@update');
+    $router->delete('/client/{id}', 'ClientesController@destroy');
+
+    //ALMACENES
+    $router->get('/store', 'AlmacenesController@index');
+    $router->get('/store/{id}', 'AlmacenesController@show');
+    $router->post('/store', 'AlmacenesController@create');
+    $router->put('/store/{id}', 'AlmacenesController@update');
+    $router->delete('/store/{id}', 'AlmacenesController@destroy');
 });
