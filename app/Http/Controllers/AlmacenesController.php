@@ -50,7 +50,8 @@ class AlmacenesController extends Controller
         } catch(\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'El almacen no se pudo registrar de manera correcta'
+                'message' => 'El almacen no se pudo registrar de manera correcta',
+                'error' => $e
             ]);
         }
     }
