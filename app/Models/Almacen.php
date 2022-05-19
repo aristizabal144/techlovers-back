@@ -22,7 +22,7 @@ class Almacen extends Model
         'descripcion'
     ];
 
-    public function client() {
-        return $this->hasOne(Cliente::class, 'id', 'id_cliente');
+    public function cliente() {
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
     }
 }

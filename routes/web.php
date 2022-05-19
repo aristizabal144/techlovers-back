@@ -21,6 +21,25 @@ use App\Http\Controllers\AlmacenesController;
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
 $router->post('user', ['as' => 'user.store', 'uses' => 'UsuariosController@store']);
 
+
+
+
+//CLIENTES
+$router->get('/client', 'ClientesController@index');
+$router->get('/client/{id}', 'ClientesController@show');
+$router->post('/client', 'ClientesController@create');
+$router->put('/client/{id}', 'ClientesController@update');
+$router->delete('/client/{id}', 'ClientesController@destroy');
+
+//ALMACENES
+$router->get('/store', 'AlmacenesController@index');
+$router->get('/store/{id}', 'AlmacenesController@show');
+$router->post('/store', 'AlmacenesController@create');
+$router->put('/store/{id}', 'AlmacenesController@update');
+$router->delete('/store/{id}', 'AlmacenesController@destroy');
+
+
+
 $router->group(['middleware' => 'auth'], function () use ($router) {
     //AUTH
     $router->get('logout', ['as' => 'logout', 'uses' => 'UsuariosController@logout']);
@@ -40,17 +59,4 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->put('/product/{id}', 'ArticulosController@update');
     $router->delete('/product/{id}', 'ArticulosController@destroy');
 
-    //CLIENTES
-    $router->get('/client', 'ClientesController@index');
-    $router->get('/client/{id}', 'ClientesController@show');
-    $router->post('/client', 'ClientesController@create');
-    $router->put('/client/{id}', 'ClientesController@update');
-    $router->delete('/client/{id}', 'ClientesController@destroy');
-
-    //ALMACENES
-    $router->get('/store', 'AlmacenesController@index');
-    $router->get('/store/{id}', 'AlmacenesController@show');
-    $router->post('/store', 'AlmacenesController@create');
-    $router->put('/store/{id}', 'AlmacenesController@update');
-    $router->delete('/store/{id}', 'AlmacenesController@destroy');
 });

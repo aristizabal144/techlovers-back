@@ -19,6 +19,7 @@ class CreateAlmacenesTable extends Migration
             $table->string('direccion');
             $table->string('telefono');
             $table->string('descripcion');
+            $table->timestamps();
             
         });
     }

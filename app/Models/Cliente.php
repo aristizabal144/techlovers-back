@@ -21,19 +21,7 @@ class Cliente extends Model
         'descripcion'
     ];
 
-    // ------------- Old Schema
-    /* protected $fillable = [
-        'id',
-        'nombre',
-        'razon_social',
-        'nit_cc',
-        'telefono',
-        'ciudad',
-        'barrio',
-        'direccion',
-        'encargado',
-        'celular',
-        'correo',
-        'url_imagen'
-    ]; */
+    public function almacenes() {
+        return $this->hasMany(Almacen::class, 'id_cliente', 'id');
+    }
 }

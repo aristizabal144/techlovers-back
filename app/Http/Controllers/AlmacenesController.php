@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\clientes;
-use App\Models\almacenes;
+use App\Models\Cliente;
+use App\Models\Almacen;
 use Illuminate\Http\Request;
 
 class AlmacenesController extends Controller
@@ -11,7 +11,7 @@ class AlmacenesController extends Controller
     public function index(Request $request)
     {
         try {
-            $stores = almacenes::paginate($request->input('size'));
+            $stores = Almacen::with('cliente')->orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los almacenes se muestran',
@@ -20,7 +20,8 @@ class AlmacenesController extends Controller
         } catch (\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'Los almacenes no se muestran'
+                'message' => 'Los almacenes no se muestran',
+                'error' => $e
             ]);
         }
     }
@@ -28,10 +29,12 @@ class AlmacenesController extends Controller
     public function create(Request $request)
     {
         try {
-            $store = new almacenes;
+            // First, we get client
+            $client = Cliente::find($request->client_id);
 
-            $store->id = $request->id;
-            $store->id_cliente = $request->id_cliente;
+            // Then, we save store
+            $store = new Almacen;
+
             $store->nit = $request->nit;
             $store->nombre = $request->nombre;
             $store->encargado = $request->encargado;
@@ -40,12 +43,11 @@ class AlmacenesController extends Controller
             $store->telefono = $request->telefono;
             $store->descripcion = $request->descripcion;
     
-            $store->save();
+            $client->almacenes()->save($store);
 
             return response()->json([
                 'is_error' => false,
-                'message' => 'El almacen fue registrado de correcta',
-                'data' => $store
+                'message' => 'El almacen fue registrado de manera correcta',
             ]);
         } catch(\Exception $e){
             return response()->json([
@@ -59,7 +61,9 @@ class AlmacenesController extends Controller
     public function show($id)
     {
         try {
-            $store = almacenes::find($id);
+            $store = Almacen::find($id);
+            // If i need client owner of this store, we have to able next line
+            // $store = $store->cliente;
             return response()->json([
                 'is_error' => false,
                 'message' => 'El almacen seleccionado, se ha encontrado',
@@ -76,10 +80,9 @@ class AlmacenesController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $store = clientes::findOrFail($id);
+            $store = Almacen::findOrFail($id);
 
             $store->id = $request->id;
-            $store->id_cliente = $request->id_cliente;
             $store->nit = $request->nit;
             $store->nombre = $request->nombre;
             $store->encargado = $request->encargado;
