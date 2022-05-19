@@ -8,79 +8,114 @@ use Illuminate\Http\Request;
 
 class AlmacenesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $stores = almacenes::paginate($request->input('size'));
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los almacenes se muestran',
+                'data' => $stores
+            ]);
+        } catch (\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los almacenes no se muestran'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        try {
+            $store = new almacenes;
+
+            $store->id = $request->id;
+            $store->id_cliente = $request->id_cliente;
+            $store->nit = $request->nit;
+            $store->nombre = $request->nombre;
+            $store->encargado = $request->encargado;
+            $store->ciudad = $request->ciudad;
+            $store->direccion = $request->direccion;
+            $store->telefono = $request->telefono;
+            $store->descripcion = $request->descripcion;
+    
+            $store->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El almacen fue registrado de correcta',
+                'data' => $store
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El almacen no se pudo registrar de manera correcta'
+            ]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show($id)
     {
-        //
+        try {
+            $store = almacenes::find($id);
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El almacen seleccionado, se ha encontrado',
+                'data' => $store
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El almacen seleccionada NO, se ha encontrado'
+            ]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\almacenes  $almacenes
-     * @return \Illuminate\Http\Response
-     */
-    public function show(almacenes $almacenes)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $store = clientes::findOrFail($id);
+
+            $store->id = $request->id;
+            $store->id_cliente = $request->id_cliente;
+            $store->nit = $request->nit;
+            $store->nombre = $request->nombre;
+            $store->encargado = $request->encargado;
+            $store->ciudad = $request->ciudad;
+            $store->direccion = $request->direccion;
+            $store->telefono = $request->telefono;
+            $store->descripcion = $request->descripcion;
+    
+            $store->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El almacen se actualizo de manera exitosa',
+                'data' => $store
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar el almacen'
+            ]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\almacenes  $almacenes
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(almacenes $almacenes)
+    public function destroy($id)
     {
-        //
-    }
+        try{
+            DB::table('almacenes')->delete($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\almacenes  $almacenes
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, almacenes $almacenes)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\almacenes  $almacenes
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(almacenes $almacenes)
-    {
-        //
+            return response()->json([
+                'is_error' => false,
+                'message' => 'El almacen se ha eliminado correctamente',
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error eliminando el almacen'
+            ]);
+        }
     }
 }
