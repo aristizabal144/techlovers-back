@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\clientes;
+use App\Models\Cliente;
+use App\Models\Almacen;
 use Illuminate\Http\Request;
 
 class ClientesController extends Controller
@@ -11,7 +12,7 @@ class ClientesController extends Controller
     public function index(Request $request)
     {
         try {
-            $clients = clientes::paginate($request->input('size'));
+            $clients = Cliente::orderBy('created_at', 'desc')->load('almacenes')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los clientes se muestran',
@@ -20,7 +21,8 @@ class ClientesController extends Controller
         } catch (\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'Los clientes no se muestran'
+                'message' => 'Los clientes no se muestran',
+                'error' => $e
             ]);
         }
     }
@@ -28,27 +30,27 @@ class ClientesController extends Controller
     public function create(Request $request)
     {
         try {
-            $client = new clientes;
+            $client = new Cliente;
 
-            $client->id = $request->id;
             $client->identificacion = $request->identificacion;
             $client->nombre = $request->nombre;
             $client->telefono_fijo = $request->telefono_fijo;
             $client->celular = $request->celular;
             $client->correo = $request->correo;
             $client->descripcion = $request->descripcion;
-    
+
             $client->save();
 
             return response()->json([
                 'is_error' => false,
-                'message' => 'El cliente fue registrado de correcta',
+                'message' => 'El cliente fue registrado de manera correcta',
                 'data' => $client
             ]);
         } catch(\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'El cliente no se pudo registrar de manera correcta'
+                'message' => 'El cliente no se pudo registrar de manera correcta',
+                'error' => $e
             ]);
         }
     }
@@ -56,7 +58,8 @@ class ClientesController extends Controller
     public function show($id)
     {
         try {
-            $client = clientes::find($id);
+            // This will return client with stores info
+            $client = Cliente::find($id)->load('almacenes');
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente seleccionado, se ha encontrado',
@@ -73,7 +76,7 @@ class ClientesController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $client = clientes::findOrFail($id);
+            $client = Cliente::findOrFail($id);
 
             $client->id = $request->id;
             $client->identificacion = $request->identificacion;

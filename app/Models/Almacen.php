@@ -12,7 +12,6 @@ class Almacen extends Model
 
     protected $fillable = [
         'id',
-        'id_cliente',
         'nit',
         'nombre',
         'encargado',
@@ -22,7 +21,7 @@ class Almacen extends Model
         'descripcion'
     ];
 
-    public function client() {
-        return $this->hasOne(Cliente::class, 'id', 'id_cliente');
+    public function cliente() {
+        return $this->belongsTo(Cliente::class);
     }
 }

@@ -17,6 +17,7 @@ class CreateClientesTable extends Migration
             $table->string('celular');
             $table->string('correo');
             $table->string('descripcion');
+            $table->timestamps();
             
             // ------------- Old Schema
             /* $table->id('id');

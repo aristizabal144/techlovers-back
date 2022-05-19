@@ -21,6 +21,10 @@ class Cliente extends Model
         'descripcion'
     ];
 
+    public function almacenes() {
+        return $this->hasMany(Almacen::class, 'id', 'almacenes');
+    }
+
     // ------------- Old Schema
     /* protected $fillable = [
         'id',

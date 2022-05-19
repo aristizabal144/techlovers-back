@@ -11,7 +11,7 @@ class CreateAlmacenesTable extends Migration
         Schema::create('almacenes', function (Blueprint $table) {
             
             $table->id('id');
-            $table->string('id_cliente');
+            $table->unsignedBigInteger('id_cliente');
             $table->string('nit');
             $table->string('nombre');
             $table->string('encargado');
@@ -19,6 +19,10 @@ class CreateAlmacenesTable extends Migration
             $table->string('direccion');
             $table->string('telefono');
             $table->string('descripcion');
+
+            $table->foreign('id_cliente')->references('id')->on('clientes')->cascadeOnUpdate();
+
+            $table->timestamps();
             
         });
     }
