@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\clientes;
+// use App\Models\clientes;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClientesController extends Controller
@@ -11,7 +12,7 @@ class ClientesController extends Controller
     public function index(Request $request)
     {
         try {
-            $clients = clientes::paginate($request->input('size'));
+            $clients = Cliente::paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los clientes se muestran',
@@ -28,7 +29,7 @@ class ClientesController extends Controller
     public function create(Request $request)
     {
         try {
-            $client = new clientes;
+            $client = new Cliente;
 
             $client->id = $request->id;
             $client->identificacion = $request->identificacion;
@@ -48,7 +49,8 @@ class ClientesController extends Controller
         } catch(\Exception $e){
             return response()->json([
                 'is_error' => true,
-                'message' => 'El cliente no se pudo registrar de manera correcta'
+                'message' => 'El cliente no se pudo registrar de manera correcta',
+                'error' => $e
             ]);
         }
     }
@@ -56,7 +58,7 @@ class ClientesController extends Controller
     public function show($id)
     {
         try {
-            $client = clientes::find($id);
+            $client = Cliente::find($id);
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente seleccionado, se ha encontrado',
@@ -73,7 +75,7 @@ class ClientesController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $client = clientes::findOrFail($id);
+            $client = Cliente::findOrFail($id);
 
             $client->id = $request->id;
             $client->identificacion = $request->identificacion;

@@ -10,7 +10,7 @@ class CreateAlmacenesTable extends Migration
     public function up(){
         Schema::create('almacenes', function (Blueprint $table) {
             
-            $table->id('id');
+            $table->bigIncrements('id');
             $table->string('id_cliente');
             $table->string('nit');
             $table->string('nombre');
