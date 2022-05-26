@@ -121,4 +121,20 @@ class ArticulosController extends Controller
             ]);
         }
     }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $products = Articulo::where('nombre','like',"%$input%")
+            ->orWhere('referencia','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($products);
+        } catch (\Exception $e) {
+           throw $e;
+        }
+    }
 }
