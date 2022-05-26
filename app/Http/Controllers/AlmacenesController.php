@@ -110,7 +110,6 @@ class AlmacenesController extends Controller
     {
         try{
             DB::table('almacenes')->delete($id);
-
             return response()->json([
                 'is_error' => false,
                 'message' => 'El almacen se ha eliminado correctamente',
