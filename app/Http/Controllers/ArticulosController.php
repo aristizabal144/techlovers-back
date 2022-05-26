@@ -12,7 +12,7 @@ class ArticulosController extends Controller
     public function index(Request $request)
     {
         try {
-            $products = Articulo::paginate($request->input('size'));
+            $products = Articulo::orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los productos se muestran',

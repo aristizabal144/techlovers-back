@@ -13,7 +13,7 @@ class CategoriasController extends Controller
     {
         try {
             if($request->input('size') != null){
-                $categories = Categoria::paginate($request->input('size'));
+                $categories = Categoria::orderBy('created_at', 'desc')->paginate($request->input('size'));
                 
             }else{
                 $categories = Categoria::all();
