@@ -82,12 +82,13 @@ class ClientesController extends Controller
     {
         try {
             // This will return client with stores info
-            $client = Cliente::find($id)->with('almacenes');
+            $client = Cliente::find($id);
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente seleccionado, se ha encontrado',
                 'data' => $client
             ]);
+            dd($client);
         } catch(\Exception $e){
             return response()->json([
                 'is_error' => true,
