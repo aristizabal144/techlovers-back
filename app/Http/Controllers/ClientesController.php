@@ -102,7 +102,6 @@ class ClientesController extends Controller
         try {
             $client = Cliente::findOrFail($id);
 
-            $client->id = $request->id;
             $client->identificacion = $request->identificacion;
             $client->nombre = $request->nombre;
             $client->telefono_fijo = $request->telefono_fijo;
