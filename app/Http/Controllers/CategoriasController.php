@@ -13,7 +13,7 @@ class CategoriasController extends Controller
     {
         try {
             if($request->input('size') != null){
-                $categories = Categoria::paginate($request->input('size'));
+                $categories = Categoria::orderBy('created_at', 'desc')->paginate($request->input('size'));
                 
             }else{
                 $categories = Categoria::all();
@@ -114,6 +114,21 @@ class CategoriasController extends Controller
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando la categoria'
             ]);
+        }
+    }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $categories = Categoria::where('nombre','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($categories);
+        } catch (\Exception $e) {
+           throw $e;
         }
     }
     

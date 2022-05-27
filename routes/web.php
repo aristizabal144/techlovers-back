@@ -30,6 +30,7 @@ $router->get('/client/{id}', 'ClientesController@show');
 $router->post('/client', 'ClientesController@create');
 $router->put('/client/{id}', 'ClientesController@update');
 $router->delete('/client/{id}', 'ClientesController@destroy');
+$router->get('/client/client-search', 'ClientesController@searchByParams');
 
 //ALMACENES
 $router->get('/store', 'AlmacenesController@index');
@@ -37,6 +38,7 @@ $router->get('/store/{id}', 'AlmacenesController@show');
 $router->post('/store', 'AlmacenesController@create');
 $router->put('/store/{id}', 'AlmacenesController@update');
 $router->delete('/store/{id}', 'AlmacenesController@destroy');
+$router->get('/store/store-search', 'AlmacenesController@searchByParams');
 
 
 
@@ -51,6 +53,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/categorie', 'CategoriasController@create');
     $router->put('/categorie/{id}', 'CategoriasController@update');
     $router->delete('/categorie/{id}', 'CategoriasController@delete');
+    $router->get('/categorie/categorie-search', 'CategoriasController@searchByParams');
 
     //PRODUCTS - ARTICULOS
     $router->get('/product', 'ArticulosController@index');
@@ -58,5 +61,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/product', 'ArticulosController@create');
     $router->put('/product/{id}', 'ArticulosController@update');
     $router->delete('/product/{id}', 'ArticulosController@destroy');
+    $router->get('/product/product-search', 'ArticulosController@searchByParams');
 
 });

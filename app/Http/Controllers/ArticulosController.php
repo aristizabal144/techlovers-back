@@ -12,7 +12,7 @@ class ArticulosController extends Controller
     public function index(Request $request)
     {
         try {
-            $products = Articulo::paginate($request->input('size'));
+            $products = Articulo::orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los productos se muestran',
@@ -119,6 +119,22 @@ class ArticulosController extends Controller
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando el producto'
             ]);
+        }
+    }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $products = Articulo::where('nombre','like',"%$input%")
+            ->orWhere('referencia','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($products);
+        } catch (\Exception $e) {
+           throw $e;
         }
     }
 }

@@ -140,4 +140,20 @@ class ClientesController extends Controller
             ]);
         }
     }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $clients = Cliente::where('nombre','like',"%$input%")
+            ->orWhere('identificacion','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($clients);
+        } catch (\Exception $e) {
+           throw $e;
+        }
+    }
 }
