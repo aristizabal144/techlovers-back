@@ -39,6 +39,7 @@ $router->post('/store', 'AlmacenesController@create');
 $router->put('/store/{id}', 'AlmacenesController@update');
 $router->delete('/store/{id}', 'AlmacenesController@destroy');
 $router->get('/store/store-search', 'AlmacenesController@searchByParams');
+$router->get('/search/store', 'AlmacenesController@search');
 
 
 

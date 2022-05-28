@@ -138,4 +138,31 @@ class AlmacenesController extends Controller
            throw $e;
         }
     }
+
+    public function search(Request $request){
+        
+        try {
+
+            $dataToSearch = $request->input('input');
+            $size = $request->input('size');
+
+            $response = Almacen::with('cliente')
+            ->whereHas('cliente', function ($query) use ($dataToSearch) {
+                $query->where('nombre', 'like', '%'.$dataToSearch.'%')
+                ->orWhere('identificacion', 'like', '%'.$dataToSearch.'%')
+                ->orWhere('telefono_fijo', 'like', '%'.$dataToSearch.'%')
+                ->orWhere('celular', 'like', '%'.$dataToSearch.'%');
+            })
+            ->orWhere('nombre', 'like', '%'.$dataToSearch.'%')
+            ->orWhere('nit','like',"%$dataToSearch%")
+            ->orWhere('encargado','like',"%$dataToSearch%")
+            ->orWhere('telefono','like',"%$dataToSearch%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($size);
+            return response()->json($response);
+        
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }
