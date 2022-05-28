@@ -146,7 +146,7 @@ class ClientesController extends Controller
         try {
             $input = $request->input('input');
 
-            $clients = Cliente::where('nombre','like',"%$input%")
+            $clients = Cliente::with('almacenes')->where('nombre','like',"%$input%")
             ->orWhere('identificacion','like',"%$input%")
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('size'));

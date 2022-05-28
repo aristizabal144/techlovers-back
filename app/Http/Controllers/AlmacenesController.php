@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Almacen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AlmacenesController extends Controller
 {
