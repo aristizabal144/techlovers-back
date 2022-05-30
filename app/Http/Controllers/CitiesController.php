@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Cities;
+use App\Models\Cities;
 
 class CitiesController extends Controller
 {

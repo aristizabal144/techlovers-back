@@ -68,4 +68,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->put('/product/{id}', 'ArticulosController@update');
     $router->delete('/product/{id}', 'ArticulosController@destroy');
 
+    //CIUDADES
+    $router->get('/ciudades-search', 'CitiesController@searchByParams');
+
 });
