@@ -16,7 +16,7 @@ class ProductosCotizacion extends Model
         'id_producto',
         'referencia',
         'nombre',
-        'cantidad',
+        'cantidad_cotizacion',
         'valor_unidad',
         'valor_total'
     ];

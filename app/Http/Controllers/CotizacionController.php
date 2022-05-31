@@ -34,7 +34,7 @@ class CotizacionController extends Controller
                 $product->id_producto = $request->products[$i]['id'];
                 $product->referencia = $request->products[$i]['referencia'];
                 $product->nombre = $request->products[$i]['nombre'];
-                $product->cantidad = $request->products[$i]['cantidad'];
+                $product->cantidad_cotizacion = $request->products[$i]['cantidad_cotizacion'];
                 $product->valor_unidad = $request->products[$i]['valor_unidad'];
                 $product->valor_total = $request->products[$i]['valor_total'];
 

@@ -19,7 +19,7 @@ class CreateProductosCotizacionsTable extends Migration
             $table->integer('id_producto');
             $table->string('referencia');
             $table->string('nombre');
-            $table->integer('cantidad');
+            $table->integer('cantidad_cotizacion');
             $table->integer('valor_unidad');
             $table->integer('valor_total');
             $table->timestamps();
