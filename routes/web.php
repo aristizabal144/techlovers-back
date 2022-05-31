@@ -21,34 +21,11 @@ use App\Http\Controllers\AlmacenesController;
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
 $router->post('user', ['as' => 'user.store', 'uses' => 'UsuariosController@store']);
 
-
-
-
-//CLIENTES
-$router->get('/client/client-search', 'ClientesController@searchByParams');
-$router->get('/client', 'ClientesController@index');
-$router->get('/client/{id}', 'ClientesController@show');
-$router->post('/client', 'ClientesController@create');
-$router->put('/client/{id}', 'ClientesController@update');
-$router->delete('/client/{id}', 'ClientesController@destroy');
-
-
-//ALMACENES
-
-$router->get('/store/store-search', 'AlmacenesController@searchByParams');
-$router->get('/store', 'AlmacenesController@index');
-$router->get('/store/{id}', 'AlmacenesController@show');
-$router->post('/store', 'AlmacenesController@create');
-$router->put('/store/{id}', 'AlmacenesController@update');
-$router->delete('/store/{id}', 'AlmacenesController@destroy');
-
-
-
 $router->group(['middleware' => 'auth'], function () use ($router) {
     //AUTH
     $router->get('logout', ['as' => 'logout', 'uses' => 'UsuariosController@logout']);
     $router->get('auth', ['as' => 'auth', 'uses' => 'UsuariosController@showAuth']);
-    
+
     //CATEGORIES
     $router->get('/categorie/categorie-search', 'CategoriasController@searchByParams');
     $router->get('/categorie', 'CategoriasController@index');
@@ -67,4 +44,32 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->put('/product/{id}', 'ArticulosController@update');
     $router->delete('/product/{id}', 'ArticulosController@destroy');
 
+    //CIUDADES
+    $router->get('/ciudades-search', 'CitiesController@searchByParams');
+
+
+    //CLIENTES
+    $router->get('/client/client-search', 'ClientesController@searchByParams');
+    $router->get('/client', 'ClientesController@index');
+    $router->get('/client/{id}', 'ClientesController@show');
+    $router->post('/client', 'ClientesController@create');
+    $router->put('/client/{id}', 'ClientesController@update');
+    $router->delete('/client/{id}', 'ClientesController@destroy');
+
+
+    //ALMACENES
+
+    $router->get('/store/store-search', 'AlmacenesController@searchByParams');
+    $router->get('/store', 'AlmacenesController@index');
+    $router->get('/store/{id}', 'AlmacenesController@show');
+    $router->post('/store', 'AlmacenesController@create');
+    $router->put('/store/{id}', 'AlmacenesController@update');
+    $router->delete('/store/{id}', 'AlmacenesController@destroy');
+    $router->get('/search/store', 'AlmacenesController@search');
+
+
+    // COTIZACIONES
+    $router->post('/quote', 'CotizacionController@create');
+    $router->get('/quote/{id}', 'CotizacionController@show');
+    $router->delete('/quote/{id}', 'CotizacionController@destroy');
 });
