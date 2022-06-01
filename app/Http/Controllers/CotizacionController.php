@@ -58,7 +58,7 @@ class CotizacionController extends Controller
     public function show($id)
     {
         try {
-            $cotizacion = Cotizacion::with('productos')->find($id);
+            $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->find($id);
 
             return response()->json([
                 'is_error' => false,
