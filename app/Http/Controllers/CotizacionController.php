@@ -10,7 +10,26 @@ use Illuminate\Support\Facades\DB;
 class CotizacionController extends Controller
 {
 
-    public function create(Request $request) {
+    public function index(Request $request)
+    {
+        try {
+            $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Las cotizaciones se muestran',
+                'data' => $cotizacion
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Las cotizaciones no se muestran',
+                'error' => $e
+            ]);
+        }
+    }
+
+    public function create(Request $request)
+    {
         try {
 
             DB::beginTransaction();
@@ -24,11 +43,11 @@ class CotizacionController extends Controller
             $quote->total = $request->total;
             $quote->descripcion = $request->description;
 
-            
+
             $quote->save();
             // return count($request->products);
 
-            for ($i=0; $i < count($request->products); $i++) {
+            for ($i = 0; $i < count($request->products); $i++) {
                 $product = new ProductosCotizacion;
                 $product->id_cotizacion = $quote->id;
                 $product->id_producto = $request->products[$i]['id'];
@@ -48,7 +67,6 @@ class CotizacionController extends Controller
                 'is_error' => false,
                 'message' => 'La cotizacion fue registrado de manera correcta',
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -65,7 +83,7 @@ class CotizacionController extends Controller
                 'message' => 'La cotizacion seleccionada, se ha encontrado',
                 'data' => $cotizacion
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'La cotizacion seleccionada NO, se ha encontrado'
@@ -73,18 +91,19 @@ class CotizacionController extends Controller
         }
     }
 
-    public function destroy($id) {
-        try{
+    public function destroy($id)
+    {
+        try {
             DB::table('cotizacions')->delete($id);
-            
+
             $product_cotizacion = ProductosCotizacion::where('id_cotizacion', $id);
             $product_cotizacion->delete();
-            
+
             return response()->json([
                 'is_error' => false,
                 'message' => 'La cotizacion se ha eliminado correctamente',
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando la cotizacion'
