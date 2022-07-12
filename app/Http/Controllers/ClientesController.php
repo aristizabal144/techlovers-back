@@ -30,51 +30,38 @@ class ClientesController extends Controller
 
     public function create(Request $request)
     {
+        // return dd($request);
+
         try {
 
-            DB::beginTransaction();
+            // DB::beginTransaction();
 
             $client = new Cliente;
 
-            $client->identificacion = $request->client['id'];
-            $client->nombre = $request->client['name'];
-            $client->telefono_fijo = $request->client['phoneNumber'];
-            $client->celular = $request->client['cellNumber'];
-            $client->correo = $request->client['email'];
-            $client->descripcion = $request->client['description'];
+            $client->identificacion = $request->id;
+            $client->nombre = $request->name;
+            $client->telefono_fijo = $request->phoneNumber;
+            $client->celular = $request->cellNumber;
+            $client->correo = $request->email;
+            $client->descripcion = $request->description;
 
             $client->save();
 
-            
-            for ($i=0; $i < count($request->stores); $i++) {
-                $store = new Almacen;
-                $store->id_cliente = $client->id;
-                $store->nit = $request->stores[$i]['nit'];
-                $store->nombre = $request->stores[$i]['nombre'];
-                $store->encargado = $request->stores[$i]['encargado'];
-                $store->ciudad = $request->stores[$i]['ciudad'];
-                $store->direccion = $request->stores[$i]['direccion'];
-                $store->telefono = $request->stores[$i]['telefono'];
-                $store->descripcion = $request->stores[$i]['descripcion'];
-                $store->save(); 
-            }
 
-            DB::commit();
-
-            return response()->json([
-                'is_error' => false,
-                'message' => 'El cliente fue registrado de manera correcta',
-                'data' => $client
-            ]);
+            // return response()->json([
+            //     'is_error' => false,
+            //     'message' => 'El cliente fue registrado de manera correcta',
+            //     'data' => $client
+            // ]);
         } catch(\Exception $e){
-            DB::rollback();
-            /* return response()->json([
+            // DB::rollback();
+            return response()->json([
                 'is_error' => true,
                 'message' => 'El cliente no se pudo registrar de manera correcta',
                 'error' => $e
-            ]); */
+            ]);
 
-            throw $e;
+            // throw $e;
         }
     }
 
