@@ -45,7 +45,7 @@ class ClientesController extends Controller
 
             $client->save();
 
-            
+
             for ($i=0; $i < count($request->stores); $i++) {
                 $store = new Almacen;
                 $store->id_cliente = $client->id;
@@ -56,7 +56,7 @@ class ClientesController extends Controller
                 $store->direccion = $request->stores[$i]['direccion'];
                 $store->telefono = $request->stores[$i]['telefono'];
                 $store->descripcion = $request->stores[$i]['descripcion'];
-                $store->save(); 
+                $store->save();
             }
 
             DB::commit();
@@ -82,7 +82,7 @@ class ClientesController extends Controller
     {
         try {
             // This will return client with stores info
-            $client = Cliente::find($id);
+            $client = Cliente::with('almacenes')->find($id);
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente seleccionado, se ha encontrado',
@@ -108,7 +108,7 @@ class ClientesController extends Controller
             $client->celular = $request->celular;
             $client->correo = $request->correo;
             $client->descripcion = $request->descripcion;
-    
+
             $client->save();
 
             return response()->json([

@@ -43,7 +43,7 @@ class AlmacenesController extends Controller
             $store->direccion = $request->direccion;
             $store->telefono = $request->telefono;
             $store->descripcion = $request->descripcion;
-    
+
             $client->almacenes()->save($store);
 
             return response()->json([
@@ -62,7 +62,7 @@ class AlmacenesController extends Controller
     public function show($id)
     {
         try {
-            $store = Almacen::find($id);
+            $store = Almacen::with('cliente')->find($id);
             // If i need client owner of this store, we have to able next line
             // $store = $store->cliente;
             return response()->json([
@@ -91,7 +91,7 @@ class AlmacenesController extends Controller
             $store->direccion = $request->direccion;
             $store->telefono = $request->telefono;
             $store->descripcion = $request->descripcion;
-    
+
             $store->save();
 
             return response()->json([
@@ -141,7 +141,7 @@ class AlmacenesController extends Controller
     }
 
     public function search(Request $request){
-        
+
         try {
 
             $dataToSearch = $request->input('input');
@@ -161,7 +161,7 @@ class AlmacenesController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($size);
             return response()->json($response);
-        
+
         } catch (\Exception $e) {
             throw $e;
         }
