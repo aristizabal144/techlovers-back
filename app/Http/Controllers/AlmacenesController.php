@@ -30,21 +30,19 @@ class AlmacenesController extends Controller
     public function create(Request $request)
     {
         try {
-            // First, we get client
-            $client = Cliente::find($request->client_id);
 
-            // Then, we save store
-            $store = new Almacen;
-
-            $store->nit = $request->nit;
-            $store->nombre = $request->nombre;
-            $store->encargado = $request->encargado;
-            $store->ciudad = $request->ciudad;
-            $store->direccion = $request->direccion;
-            $store->telefono = $request->telefono;
-            $store->descripcion = $request->descripcion;
-
-            $client->almacenes()->save($store);
+            for ($i=0; $i < count($request->stores); $i++) {
+                $store = new Almacen;
+                $store->nit = $request->stores[$i]['nit'];
+                $store->nombre = $request->stores[$i]['nombre'];
+                $store->encargado = $request->stores[$i]['encargado'];
+                $store->ciudad = $request->stores[$i]['ciudad'];
+                $store->direccion = $request->stores[$i]['direccion'];
+                $store->telefono = $request->stores[$i]['telefono'];
+                $store->id_cliente = $request->stores[$i]['id_cliente'];
+                $store->descripcion = $request->stores[$i]['descripcion'];
+                $store->save(); 
+            }
 
             return response()->json([
                 'is_error' => false,
@@ -89,6 +87,7 @@ class AlmacenesController extends Controller
             $store->encargado = $request->encargado;
             $store->ciudad = $request->ciudad;
             $store->direccion = $request->direccion;
+            $store->id_cliente = $request->id_cliente;
             $store->telefono = $request->telefono;
             $store->descripcion = $request->descripcion;
 
