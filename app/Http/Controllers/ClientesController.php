@@ -69,7 +69,7 @@ class ClientesController extends Controller
     {
         try {
             // This will return client with stores info
-            $client = Cliente::find($id);
+            $client = Cliente::with('almacenes')->find($id);
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente seleccionado, se ha encontrado',
@@ -95,7 +95,7 @@ class ClientesController extends Controller
             $client->celular = $request->celular;
             $client->correo = $request->correo;
             $client->descripcion = $request->descripcion;
-    
+
             $client->save();
 
             return response()->json([

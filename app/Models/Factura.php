@@ -8,9 +8,28 @@ class Factura extends Model
 {
     public $table = 'facturas';
 
-    protected $primaryKey = "id";
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'id_cliente_fk', 'numero_cotizacion', 'fecha', 'total_descuento', 'total_factura', 'descripcion'
+        'id',
+        'referencia',
+        'fecha',
+        'id_cliente',
+        'id_almacen',
+        'descripcion',
+        'estado',
+        'total'
     ];
+
+    public function cliente() {
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
+    }
+
+    public function almacen() {
+        return $this->belongsTo(Almacen::class, 'id_almacen', 'id');
+    }
+
+    public function productos() {
+        return $this->hasMany(ProductosFactura::class, 'id_factura', 'id');
+    }
 }
