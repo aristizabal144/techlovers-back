@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cotizacion;
+use App\Models\Factura;
 use App\Models\ProductosCotizacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -107,6 +108,62 @@ class CotizacionController extends Controller
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando la cotizacion'
+            ]);
+        }
+    }
+
+    public function check($id)
+    {
+        try {
+
+            /* DB::beginTransaction(); */
+
+            // Se actualiza el estado de la cotizacion a facturado
+            $cotizacion = Cotizacion::findOrFail($id);
+            $cotizacion->facturado = true;
+            //$cotizacion->save();     <---------------------------------------------- OJO AUN NO SE GUARDA PARA NO CAGAR LA DB
+
+            // Se crea la nueva factura en estado: "pendiente_pago"
+            $invoice = new Factura;
+            $invoice->referencia = $cotizacion->referencia;
+            $invoice->fecha = $cotizacion->fecha;
+            $invoice->id_cliente = $cotizacion->id_cliente;
+            $invoice->id_almacen = $cotizacion->id_almacen;
+            $invoice->descripcion = $cotizacion->descripcion;
+            $invoice->estado = 'pendiente_pago';
+            $invoice->total = $cotizacion->total;
+            //$invoice->save();        <---------------------------------------------- OJO AUN NO SE GUARDA PARA NO CAGAR LA DB
+            // return count($request->products);
+
+            // Se crea un producto factura por cada uno
+            /* for ($i = 0; $i < count($request->products); $i++) {
+                $product = new ProductosFactura;
+                $product->id_factura = $invoice->id;
+                $product->id_producto = $request->products[$i]['id'];
+                $product->referencia = $request->products[$i]['referencia'];
+                $product->nombre = $request->products[$i]['nombre'];
+                $product->cantidad = $request->products[$i]['cantidad'];
+                $product->valor_unidad = $request->products[$i]['valor_unidad'];
+                $product->valor_total = $request->products[$i]['valor_total'];
+
+                $product->save();
+            } */
+
+            /* DB::commit(); */
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La cotización se actualizo de manera exitosa y se creó una nueva factura',
+                'data' => collect([
+                    'cotization' => $cotizacion,
+                    'invoice' => $invoice,
+                ])
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'error' => $e,
+                'message' => 'Hubo un error al momento de actualizar la cotización y creacion de la nueva factura'
             ]);
         }
     }

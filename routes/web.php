@@ -73,10 +73,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/quote', 'CotizacionController@create');
     $router->get('/quote/{id}', 'CotizacionController@show');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
+    $router->put('/quote/{id}', 'CotizacionController@check');
+
 
     // FACTURAS
     $router->get('/invoice', 'FacturaController@index');
     $router->post('/invoice', 'FacturaController@create');
     $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
+    $router->put('/invoice/{id}', 'FacturaController@statusChange');
 });
