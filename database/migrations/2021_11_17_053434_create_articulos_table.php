@@ -15,7 +15,7 @@ class CreateArticulosTable extends Migration
             $table->string('referencia');
             $table->string('nombre');
             $table->integer('valor_entra');
-            $table->integer('porcentaje_venta');
+            $table->float('porcentaje_venta');
             $table->integer('valor_venta');
             $table->integer('cantidad');
             $table->text('descripcion');
