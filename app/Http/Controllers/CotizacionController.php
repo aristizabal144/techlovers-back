@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Cotizacion;
 use App\Models\ProductosCotizacion;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ArticulosController;
 use Illuminate\Support\Facades\DB;
 
 class CotizacionController extends Controller
@@ -59,6 +61,12 @@ class CotizacionController extends Controller
 
                 $product->save();
             }
+
+            // Inventario
+
+            $articulo = new ArticulosController;
+            $articulo->handleProductAmount($request);
+
 
             DB::commit();
 

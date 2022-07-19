@@ -18,7 +18,7 @@ class ArticulosController extends Controller
                 'message' => 'Los productos se muestran',
                 'data' => $products
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Los productos no se muestran'
@@ -48,15 +48,13 @@ class ArticulosController extends Controller
                 'message' => 'El producto fue registrado de correcta',
                 'data' => $products
             ]);
-
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'msg_error' => $e,
                 'message' => 'El producto no se pudo registrar de manera correcta'
             ]);
         }
-
     }
 
     public function show($id)
@@ -68,7 +66,7 @@ class ArticulosController extends Controller
                 'message' => 'El producto seleccionado, se ha encontrado',
                 'data' => $products
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'El producto seleccionada NO, se ha encontrado'
@@ -89,7 +87,7 @@ class ArticulosController extends Controller
             $products->cantidad = $request->cantidad;
             $products->descripcion = $request->descripcion;
             $products->urlImagen = $request->urlImagen;
-    
+
             $products->save();
 
             return response()->json([
@@ -97,7 +95,7 @@ class ArticulosController extends Controller
                 'message' => 'El producto se actualizo de manera exitosa',
                 'data' => $products
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error al momento de actualizar el producto'
@@ -107,14 +105,14 @@ class ArticulosController extends Controller
 
     public function destroy($id)
     {
-        try{
+        try {
             DB::table('articulos')->delete($id);
 
             return response()->json([
                 'is_error' => false,
                 'message' => 'El producto se ha eliminado correctamente',
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando el producto'
@@ -127,14 +125,42 @@ class ArticulosController extends Controller
         try {
             $input = $request->input('input');
 
-            $products = Articulo::where('nombre','like',"%$input%")
-            ->orWhere('referencia','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
+            $products = Articulo::where('nombre', 'like', "%$input%")
+                ->orWhere('referencia', 'like', "%$input%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('size'));
 
             return response()->json($products);
         } catch (\Exception $e) {
-           throw $e;
+            throw $e;
+        }
+    }
+
+    public function handleProductAmount(Request $request) {
+        try {
+            if ($request->creation) {
+                for ($i = 0; $i < count($request->products); $i++) {
+                    $articulo = Articulo::find($request->products[$i]['id']);
+                    $articulo->cantidad = $articulo->cantidad - $request->products[$i]['cantidad_cotizacion'];
+                    $articulo->save();
+                }
+            } else {
+                for ($i = 0; $i < count($request->products); $i++) {
+                    $articulo = Articulo::find($request->products[$i]['id']);
+    
+                    $operation = $request->products[$i]['cantidad_cotizacion'] - $articulo->ultimoMovimiento;
+    
+                    if ($operation >= 0) {
+                        $articulo->cantidad = $articulo->cantidad - $operation;
+                    } else {
+                        $articulo->cantidad = $articulo->cantidad + ($operation * (-1));
+                    }
+                    $articulo->ultimoMovimiento = $operation;
+                    $articulo->save();
+                }
+            }
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 }

@@ -20,6 +20,7 @@ class CreateArticulosTable extends Migration
             $table->integer('cantidad');
             $table->text('descripcion');
             $table->string('urlImagen');
+            $table->integer('ultimoMovimiento')->default(0);
             $table->timestamps();
         });
         Schema::table('articulos', function(Blueprint $table){
