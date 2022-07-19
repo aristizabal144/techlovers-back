@@ -17,6 +17,7 @@ class Almacen extends Model
         'nombre',
         'encargado',
         'ciudad',
+        'barrio',
         'direccion',
         'telefono',
         'descripcion'
