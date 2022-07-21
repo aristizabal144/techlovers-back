@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cotizacion;
 use App\Models\Factura;
 use App\Models\ProductosCotizacion;
+use App\Models\ProductosFactura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -43,7 +44,7 @@ class CotizacionController extends Controller
             $quote->id_almacen = $request->store['id'];
             $quote->total = $request->total;
             $quote->descripcion = $request->description;
-
+            $quote->facturado = false;
 
             $quote->save();
             // return count($request->products);
@@ -112,52 +113,48 @@ class CotizacionController extends Controller
         }
     }
 
-    public function check($id)
+    public function check(Request $request)
     {
         try {
 
-            /* DB::beginTransaction(); */
+            DB::beginTransaction();
 
             // Se actualiza el estado de la cotizacion a facturado
-            $cotizacion = Cotizacion::findOrFail($id);
+            $cotizacion = Cotizacion::with('productos')->findOrFail($request->id);
             $cotizacion->facturado = true;
-            //$cotizacion->save();     <---------------------------------------------- OJO AUN NO SE GUARDA PARA NO CAGAR LA DB
+
+            $cotizacion->save();
 
             // Se crea la nueva factura en estado: "pendiente_pago"
             $invoice = new Factura;
-            $invoice->referencia = $cotizacion->referencia;
-            $invoice->fecha = $cotizacion->fecha;
+            $invoice->referencia = $cotizacion->referencia;    // es la misma refeencia de cotizacion ?
+            $invoice->fecha = $cotizacion->fecha;              // La fecha de facturacion es igual a la fecha de cotizacion ?
             $invoice->id_cliente = $cotizacion->id_cliente;
             $invoice->id_almacen = $cotizacion->id_almacen;
-            $invoice->descripcion = $cotizacion->descripcion;
+            $invoice->descripcion = $cotizacion->descripcion;  // Para una factura deberá ser otra descripcion ?
             $invoice->estado = 'pendiente_pago';
             $invoice->total = $cotizacion->total;
-            //$invoice->save();        <---------------------------------------------- OJO AUN NO SE GUARDA PARA NO CAGAR LA DB
-            // return count($request->products);
+            $invoice->save();
 
             // Se crea un producto factura por cada uno
-            /* for ($i = 0; $i < count($request->products); $i++) {
+            for ($i = 0; $i < count($request->productos); $i++) {
                 $product = new ProductosFactura;
                 $product->id_factura = $invoice->id;
-                $product->id_producto = $request->products[$i]['id'];
-                $product->referencia = $request->products[$i]['referencia'];
-                $product->nombre = $request->products[$i]['nombre'];
-                $product->cantidad = $request->products[$i]['cantidad'];
-                $product->valor_unidad = $request->products[$i]['valor_unidad'];
-                $product->valor_total = $request->products[$i]['valor_total'];
+                $product->id_producto = $request->productos[$i]['id'];
+                $product->referencia = $request->productos[$i]['referencia'];
+                $product->nombre = $request->productos[$i]['nombre'];
+                $product->cantidad = $request->productos[$i]['cantidad_cotizacion'];
+                $product->valor_unidad = $request->productos[$i]['valor_unidad'];
+                $product->valor_total = $request->productos[$i]['valor_total'];
 
                 $product->save();
-            } */
+            }
 
-            /* DB::commit(); */
+            DB::commit();
 
             return response()->json([
                 'is_error' => false,
-                'message' => 'La cotización se actualizo de manera exitosa y se creó una nueva factura',
-                'data' => collect([
-                    'cotization' => $cotizacion,
-                    'invoice' => $invoice,
-                ])
+                'message' => 'La cotización se actualizo de manera exitosa y se creó una nueva factura'
             ]);
         } catch(\Exception $e){
             return response()->json([
