@@ -79,4 +79,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/invoice', 'FacturaController@create');
     $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
+
+     // DEVOLUCIONES
+     $router->get('/return', 'DevolucionesController@index');
+     $router->post('/return', 'DevolucionesController@create');
+     $router->get('/return/{id}', 'DevolucionesController@show');
+     $router->delete('/return/{id}', 'DevolucionesController@destroy');
 });
