@@ -16,6 +16,7 @@ class CreateAlmacenesTable extends Migration
             $table->string('nombre');
             $table->string('encargado');
             $table->string('ciudad');
+            $table->string('barrio');
             $table->string('direccion');
             $table->string('telefono');
             $table->string('descripcion');

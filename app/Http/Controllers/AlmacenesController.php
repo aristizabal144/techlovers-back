@@ -37,6 +37,7 @@ class AlmacenesController extends Controller
                 $store->nombre = $request->stores[$i]['nombre'];
                 $store->encargado = $request->stores[$i]['encargado'];
                 $store->ciudad = $request->stores[$i]['ciudad'];
+                $store->barrio = $request->stores[$i]['barrio'];
                 $store->direccion = $request->stores[$i]['direccion'];
                 $store->telefono = $request->stores[$i]['telefono'];
                 $store->id_cliente = $request->stores[$i]['id_cliente'];
@@ -86,6 +87,7 @@ class AlmacenesController extends Controller
             $store->nombre = $request->nombre;
             $store->encargado = $request->encargado;
             $store->ciudad = $request->ciudad;
+            $store->barrio = $request->barrio;
             $store->direccion = $request->direccion;
             $store->id_cliente = $request->id_cliente;
             $store->telefono = $request->telefono;
