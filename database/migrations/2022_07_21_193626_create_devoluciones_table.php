@@ -15,6 +15,7 @@ class CreateDevolucionesTable extends Migration
     {
         Schema::create('devoluciones', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('id_factura');
             $table->string('referencia');
             $table->string('fecha');
             $table->string('nombre');

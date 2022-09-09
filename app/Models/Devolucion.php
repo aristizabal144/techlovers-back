@@ -12,6 +12,7 @@ class Devolucion extends Model
 
     protected $fillable = [
         'id',
+        'id_factura',
         'referencia',
         'fecha',
         'nombre',
