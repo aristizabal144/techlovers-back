@@ -112,6 +112,22 @@ class CotizacionController extends Controller
             $quote->facturado = false;
 
             $quote->save();
+
+
+            for ($i = 0; $i < count($request->products); $i++) {
+                $product = new ProductosCotizacion;
+                $product->id_cotizacion = $quote->id;
+                $product->id_producto = $request->products[$i]['id'];
+                $product->referencia = $request->products[$i]['referencia'];
+                $product->nombre = $request->products[$i]['nombre'];
+                $product->cantidad_cotizacion = $request->products[$i]['cantidad_cotizacion'];
+                $product->valor_unidad = $request->products[$i]['valor_unidad'];
+                $product->valor_total = $request->products[$i]['valor_total'];
+
+                $product->save();
+            }
+
+
         } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
