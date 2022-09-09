@@ -73,6 +73,12 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/quote', 'CotizacionController@create');
     $router->get('/quote/{id}', 'CotizacionController@show');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
+<<<<<<< Updated upstream
+=======
+    $router->put('/quote/{id}', 'CotizacionController@update');
+    $router->put('/quote', 'CotizacionController@check');
+
+>>>>>>> Stashed changes
 
     // FACTURAS
     $router->get('/invoice', 'FacturaController@index');

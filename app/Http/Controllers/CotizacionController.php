@@ -99,6 +99,27 @@ class CotizacionController extends Controller
         }
     }
 
+    public function update(Request $request, $id){
+        try {
+            $quote = Cotizacion::findOrFail($id);
+
+            $quote->referencia = $request->reference;
+            $quote->fecha = $request->date;
+            $quote->id_cliente = $request->customer['id'];
+            $quote->id_almacen = $request->store['id'];
+            $quote->total = $request->total;
+            $quote->descripcion = $request->description;
+            $quote->facturado = false;
+
+            $quote->save();
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar la cotizacion'
+            ]);
+        }
+    }
+
     public function destroy($id)
     {
         try {
