@@ -114,6 +114,15 @@ class ClientesController extends Controller
     public function destroy($id)
     {
         try{
+            $almacenes = Almacen::where('id_cliente', $id)->get();
+
+            if (count($almacenes) > 0) {
+                return response()->json([
+                    'is_error' => true,
+                    'message' => 'El cliente no se puede eliminar, ya que tiene almacenes relacionados',
+                ], 405);
+            }
+
             DB::table('clientes')->delete($id);
 
             return response()->json([
