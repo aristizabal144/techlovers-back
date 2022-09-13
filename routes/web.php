@@ -89,5 +89,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
      $router->post('/return', 'DevolucionesController@create');
      $router->get('/return/{id}', 'DevolucionesController@show');
      $router->delete('/return/{id}', 'DevolucionesController@destroy');
-    //  $router->get('/return/return-search', 'DevolucionesController@searchByParams');
+     $router->get('/return/return-search', 'DevolucionesController@searchByParams');
 });
