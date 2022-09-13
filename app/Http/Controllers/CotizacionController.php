@@ -99,8 +99,12 @@ class CotizacionController extends Controller
         }
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         try {
+
+            DB::beginTransaction();
+
             $quote = Cotizacion::findOrFail($id);
 
             $quote->referencia = $request->reference;
@@ -115,6 +119,8 @@ class CotizacionController extends Controller
 
 
             for ($i = 0; $i < count($request->products); $i++) {
+                DB::table('productos_cotizacions')->delete($request->products[$i]['id']);
+
                 $product = new ProductosCotizacion;
                 $product->id_cotizacion = $quote->id;
                 $product->id_producto = $request->products[$i]['id'];
@@ -127,8 +133,9 @@ class CotizacionController extends Controller
                 $product->save();
             }
 
-
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error al momento de actualizar la cotizacion'
