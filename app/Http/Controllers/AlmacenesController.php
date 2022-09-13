@@ -87,6 +87,7 @@ class AlmacenesController extends Controller
             $store->nombre = $request->nombre;
             $store->encargado = $request->encargado;
             $store->ciudad = $request->ciudad;
+            $store->barrio = $request->barrio;
             $store->direccion = $request->direccion;
             $store->id_cliente = $request->id_cliente;
             $store->telefono = $request->telefono;
