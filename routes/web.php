@@ -69,6 +69,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 
     // COTIZACIONES
+    $router->get('/quote/quote-search', 'CotizacionController@searchByParams');
     $router->get('/quote', 'CotizacionController@index');
     $router->post('/quote', 'CotizacionController@create');
     $router->get('/quote/{id}', 'CotizacionController@show');

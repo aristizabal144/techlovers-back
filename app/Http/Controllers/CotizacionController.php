@@ -216,4 +216,19 @@ class CotizacionController extends Controller
             ]);
         }
     }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $cotizacion = Cotizacion::where('referencia','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($cotizacion);
+        } catch (\Exception $e) {
+           throw $e;
+        }
+    }
 }
