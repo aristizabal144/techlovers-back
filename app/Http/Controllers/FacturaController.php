@@ -27,7 +27,8 @@ class FacturaController extends Controller
         }
     }
 
-    // ESTE METODO DEBE DESCONTAR LOS PRODUCTOS EN INVENTARIO !!!!!!!!!!!!!!!! AUN NO SE IMPLEMENTA
+    // ESTE METODO SE REPLICA EN LA ACTUALIZACION DE LAS COTIZACIONES
+    // LA CREACION DE UNA FACTURA SOLO SE DÁ CUANDO SE PASA DE UNA COTIZACION A FACTURADO!!!!
     public function create(Request $request)
     {
         try {

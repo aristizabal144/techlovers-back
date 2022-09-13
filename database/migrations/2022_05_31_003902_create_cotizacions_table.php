@@ -15,6 +15,7 @@ class CreateCotizacionsTable extends Migration
             $table->integer('id_almacen');
             $table->string('descripcion');
             $table->integer('total');
+            $table->boolean('facturado')->default(false);
             $table->timestamps();
         });
     }
