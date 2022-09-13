@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Cotizacion;
 use App\Models\Factura;
 use App\Models\ProductosCotizacion;
 use App\Models\ProductosFactura;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ArticulosController;
 use Illuminate\Support\Facades\DB;
 
 class CotizacionController extends Controller
@@ -62,6 +64,12 @@ class CotizacionController extends Controller
                 $product->save();
             }
 
+            // Inventario
+
+            $articulo = new ArticulosController;
+            $articulo->handleProductAmount($request);
+
+
             DB::commit();
 
 
@@ -89,6 +97,50 @@ class CotizacionController extends Controller
             return response()->json([
                 'is_error' => true,
                 'message' => 'La cotizacion seleccionada NO, se ha encontrado'
+            ]);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $quote = Cotizacion::findOrFail($id);
+
+            $quote->referencia = $request->reference;
+            $quote->fecha = $request->date;
+            $quote->id_cliente = $request->customer['id'];
+            $quote->id_almacen = $request->store['id'];
+            $quote->total = $request->total;
+            $quote->descripcion = $request->description;
+            $quote->facturado = false;
+
+            $quote->save();
+
+
+            for ($i = 0; $i < count($request->products); $i++) {
+                DB::table('productos_cotizacions')->delete($request->products[$i]['id']);
+
+                $product = new ProductosCotizacion;
+                $product->id_cotizacion = $quote->id;
+                $product->id_producto = $request->products[$i]['id'];
+                $product->referencia = $request->products[$i]['referencia'];
+                $product->nombre = $request->products[$i]['nombre'];
+                $product->cantidad_cotizacion = $request->products[$i]['cantidad_cotizacion'];
+                $product->valor_unidad = $request->products[$i]['valor_unidad'];
+                $product->valor_total = $request->products[$i]['valor_total'];
+
+                $product->save();
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar la cotizacion'
             ]);
         }
     }

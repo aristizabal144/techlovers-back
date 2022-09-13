@@ -12,12 +12,20 @@ class Devolucion extends Model
 
     protected $fillable = [
         'id',
+        'id_factura',
         'referencia',
         'fecha',
         'nombre',
         'cantidad',
         'descripcion'
     ];
+
+    public function factura() {
+        return $this->belongsTo(Factura::class, 'id_factura', 'id');
+    }
+    public function productos() {
+        return $this->hasMany(ProductosCotizacion::class, 'id_cotizacion', 'id');
+    }
 
 }
 
