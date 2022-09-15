@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Articulo;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +104,15 @@ class CategoriasController extends Controller
     public function delete($id)
     {
         try{
+            $products = Articulo::where('id_categoria', $id)->get();
+
+            if (count($products) > 0) {
+                return response()->json([
+                    'is_error' => true,
+                    'message' => 'La categoria no se puede eliminar, ya que tiene relacion con productos',
+                ], 405);
+            }
+
             DB::table('categorias')->delete($id);
 
             return response()->json([
