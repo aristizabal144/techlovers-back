@@ -85,7 +85,7 @@ class DevolucionesController extends Controller
         try {
             $input = $request->input('input');
 
-            $invoices = Factura::where('nombre','like',"%$input%")
+            $invoices = Factura::where('id','like',"%$input%")
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('size'));
 
