@@ -69,21 +69,26 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
 
     // COTIZACIONES
+    $router->get('/quote/quote-search', 'CotizacionController@searchByParams');
     $router->get('/quote', 'CotizacionController@index');
     $router->post('/quote', 'CotizacionController@create');
     $router->get('/quote/{id}', 'CotizacionController@show');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
+    $router->put('/quote/{id}', 'CotizacionController@update');
+    $router->put('/quote', 'CotizacionController@check');
+
 
     // FACTURAS
     $router->get('/invoice', 'FacturaController@index');
     $router->post('/invoice', 'FacturaController@create');
     $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
+    $router->put('/invoice', 'FacturaController@statusChange');
 
      // DEVOLUCIONES
      $router->get('/return', 'DevolucionesController@index');
      $router->post('/return', 'DevolucionesController@create');
      $router->get('/return/{id}', 'DevolucionesController@show');
      $router->delete('/return/{id}', 'DevolucionesController@destroy');
-     $router->get('/return/return-search', 'DevolucionesController@searchByParams');
+    //  $router->get('/return/return-search', 'DevolucionesController@searchByParams');
 });

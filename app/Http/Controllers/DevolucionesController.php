@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Factura;
 use App\Models\Devolucion;
 use Illuminate\Support\Facades\DB;
 
@@ -84,7 +85,7 @@ class DevolucionesController extends Controller
         try {
             $input = $request->input('input');
 
-            $invoices = Facturas::where('nombre','like',"%$input%")
+            $invoices = Factura::where('nombre','like',"%$input%")
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('size'));
 

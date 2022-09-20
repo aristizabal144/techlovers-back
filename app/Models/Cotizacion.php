@@ -12,18 +12,19 @@ class Cotizacion extends Model
 
     protected $fillable = [
         'id',
-        'id_cliente',
-        'id_almacen',
         'referencia',
         'fecha',
+        'id_cliente',
+        'id_almacen',
         'descripcion',
-        'total'
+        'total',
+        'facturado'
     ];
 
     public function cliente() {
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
     }
-    
+
     public function almacen() {
         return $this->belongsTo(Almacen::class, 'id_almacen', 'id');
     }
