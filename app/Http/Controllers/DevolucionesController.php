@@ -47,7 +47,7 @@ class DevolucionesController extends Controller
 
             $return->save();
 
-            /* Pendiente por revisar para NO GUARDAR, sino traer y modificar una factura 
+            /* Pendiente por revisar para NO GUARDAR, sino traer y modificar una factura
 
             for ($i = 0; $i < count($request->products); $i++) {
                 $product = new ProductosDevolucion;
@@ -77,8 +77,8 @@ class DevolucionesController extends Controller
 
 
     public function searchByParams(Request $request)
-    {   
-        /* Todo este metodo falta revisar que parametros necesitamos ahi para buscar 
+    {
+        /* Todo este metodo falta revisar que parametros necesitamos ahi para buscar
            Testear lo que esta haciendo y que si busque por parametros
         */
         try {
@@ -93,4 +93,21 @@ class DevolucionesController extends Controller
            throw $e;
         }
     }
+
+    /* public function searchByParams(Request $request)
+    {
+        try {
+            $input = $request->input('input');
+
+            $stores = Almacen::where('nombre','like',"%$input%")
+            ->orWhere('nit','like',"%$input%")
+            ->orWhere('encargado','like',"%$input%")
+            ->orderBy('created_at', 'desc')
+            ->paginate($request->input('size'));
+
+            return response()->json($stores);
+        } catch (\Exception $e) {
+           throw $e;
+        }
+    } */
 }
