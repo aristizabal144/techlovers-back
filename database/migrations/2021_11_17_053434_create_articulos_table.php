@@ -13,6 +13,7 @@ class CreateArticulosTable extends Migration
             $table->id('id');
             $table->unsignedBigInteger('id_categoria');
             $table->string('referencia');
+            $table->string('codigo_barras');
             $table->string('nombre');
             $table->integer('valor_entra');
             $table->float('porcentaje_venta');

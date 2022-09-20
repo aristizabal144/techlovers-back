@@ -33,6 +33,7 @@ class ArticulosController extends Controller
 
             $products->id_categoria = $request->categoryId;
             $products->referencia = $request->reference;
+            $products->codigo_barras = $request->barCode;
             $products->nombre = $request->name;
             $products->valor_entra = $request->entryValue;
             $products->porcentaje_venta = $request->salePercentage;
@@ -82,6 +83,7 @@ class ArticulosController extends Controller
             $products = Articulo::find($id);
 
             $products->referencia = $request->referencia;
+            $products->codigo_barras = $request->codigo_barras;
             $products->nombre = $request->nombre;
             $products->valor_entra = $request->valor_entra;
             $products->porcentaje_venta = $request->porcentaje_venta;
@@ -89,7 +91,7 @@ class ArticulosController extends Controller
             $products->cantidad = $request->cantidad;
             $products->descripcion = $request->descripcion;
             $products->urlImagen = $request->urlImagen;
-    
+
             $products->save();
 
             return response()->json([
@@ -129,6 +131,7 @@ class ArticulosController extends Controller
 
             $products = Articulo::where('nombre','like',"%$input%")
             ->orWhere('referencia','like',"%$input%")
+            ->orWhere('codigo_barras','like',"%$input%")
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('size'));
 
