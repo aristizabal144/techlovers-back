@@ -85,7 +85,7 @@ class DevolucionesController extends Controller
         try {
             $input = $request->input('input');
 
-            $invoices = Factura::where('id','like',"%$input%")
+            $invoices = Factura::with('productos')->where('referencia','like',"%$input%")
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('size'));
 
@@ -95,20 +95,4 @@ class DevolucionesController extends Controller
         }
     }
 
-    /* public function searchByParams(Request $request)
-    {
-        try {
-            $input = $request->input('input');
-
-            $stores = Almacen::where('nombre','like',"%$input%")
-            ->orWhere('nit','like',"%$input%")
-            ->orWhere('encargado','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
-
-            return response()->json($stores);
-        } catch (\Exception $e) {
-           throw $e;
-        }
-    } */
 }
