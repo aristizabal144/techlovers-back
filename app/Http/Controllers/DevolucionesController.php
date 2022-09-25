@@ -19,7 +19,6 @@ class DevolucionesController extends Controller
                 'message' => 'Las devoluciones se muestran',
                 'data' => $devolucion
             ]);
-            return dd("Hola EmA DESDE EL CONTROLADOR");
         } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
@@ -37,7 +36,7 @@ class DevolucionesController extends Controller
 
             $return = new Devolucion;
 
-            $return->id_factura = $request->reference;
+            $return->id_factura = $request->idInvoice;
             $return->referencia = $request->reference;
             $return->fecha = $request->date;
             $return->id_cliente = $request->customer['id'];
@@ -48,7 +47,7 @@ class DevolucionesController extends Controller
 
             $return->save();
 
-            /* Pendiente por revisar para NO GUARDAR, sino traer y modificar una factura
+            /* Pendiente por revisar para GUARDAR los productos que se traen y modificar una factura ya creada
 
             for ($i = 0; $i < count($request->products); $i++) {
                 $product = new ProductosDevolucion;
@@ -76,12 +75,36 @@ class DevolucionesController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        try {
+            $return = Devolucion::findOrFail($id);
+
+            $return->id_factura = $request->idInvoice;
+            $return->referencia = $request->reference;
+            $return->fecha = $request->date;
+            $return->id_cliente = $request->customer['id'];
+            $return->id_almacen = $request->store['id'];
+            $return->total = $request->total;
+            $return->descripcion = $request->description;
+
+            $return->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La devolución se actualizo de manera exitosa',
+                'data' => $return
+            ]);
+        } catch(\Exception $e){
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de actualizar la devolución'
+            ]);
+        }
+    }
 
     public function searchByParams(Request $request)
     {
-        /* Todo este metodo falta revisar que parametros necesitamos ahi para buscar
-           Testear lo que esta haciendo y que si busque por parametros
-        */
         try {
             $input = $request->input('input');
 
@@ -91,7 +114,7 @@ class DevolucionesController extends Controller
 
             return response()->json($invoices);
         } catch (\Exception $e) {
-           throw $e;
+            throw $e;
         }
     }
 
