@@ -62,10 +62,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/store/store-search', 'AlmacenesController@searchByParams');
     $router->get('/store', 'AlmacenesController@index');
     $router->get('/store/{id}', 'AlmacenesController@show');
+    $router->get('/search/store', 'AlmacenesController@search');
     $router->post('/store', 'AlmacenesController@create');
     $router->put('/store/{id}', 'AlmacenesController@update');
     $router->delete('/store/{id}', 'AlmacenesController@destroy');
-    $router->get('/search/store', 'AlmacenesController@search');
+    
 
 
     // COTIZACIONES
@@ -87,8 +88,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
      // DEVOLUCIONES
      $router->get('/return', 'DevolucionesController@index');
+     $router->get('/return/return-search', 'DevolucionesController@searchByParams');
      $router->post('/return', 'DevolucionesController@create');
      $router->get('/return/{id}', 'DevolucionesController@show');
      $router->delete('/return/{id}', 'DevolucionesController@destroy');
-     $router->get('/return/return-search', 'DevolucionesController@searchByParams');
 });
