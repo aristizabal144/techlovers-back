@@ -11,6 +11,16 @@ class Articulo extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'id_categoria', 'referencia', 'nombre', 'valor_entra', 'porcentaje_venta', 'valor_venta', 'cantidad', 'descripcion', 'urlImagen', 'ultimoMovimiento'
+        'id',
+        'id_categoria',
+        'referencia',
+        'codigo_barras',
+        'nombre',
+        'valor_entra',
+        'porcentaje_venta',
+        'valor_venta',
+        'cantidad',
+        'descripcion',
+        'urlImagen'
     ];
 }
