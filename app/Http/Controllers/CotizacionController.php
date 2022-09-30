@@ -40,7 +40,7 @@ class CotizacionController extends Controller
 
             $quote = new Cotizacion;
 
-            $quote->referencia = $request->reference;
+            $quote->referencia =substr($request->reference, 0, 3);
             $quote->fecha = $request->date;
             $quote->id_cliente = $request->customer['id'];
             $quote->id_almacen = $request->store['id'];
@@ -48,6 +48,8 @@ class CotizacionController extends Controller
             $quote->descripcion = $request->description;
             $quote->facturado = false;
 
+            $quote->save();
+            $quote->referencia =substr($request->reference, 0, 3).$quote->id;
             $quote->save();
             // return count($request->products);
 
@@ -63,11 +65,6 @@ class CotizacionController extends Controller
 
                 $product->save();
             }
-
-            // Inventario
-
-            $articulo = new ArticulosController;
-            $articulo->handleProductAmount($request);
 
 
             DB::commit();
@@ -86,7 +83,7 @@ class CotizacionController extends Controller
     public function show($id)
     {
         try {
-            $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->find($id);
+            $cotizacion = Cotizacion::with('productos.producto')->with('cliente')->with('almacen')->find($id);
 
             return response()->json([
                 'is_error' => false,
@@ -119,10 +116,10 @@ class CotizacionController extends Controller
 
             $quote->save();
 
+            ProductosCotizacion::where('id_cotizacion',$request->id)->delete();
 
             for ($i = 0; $i < count($request->products); $i++) {
-                DB::table('productos_cotizacions')->delete($request->products[$i]['id']);
-
+                
                 $product = new ProductosCotizacion;
                 $product->id_cotizacion = $quote->id;
                 $product->id_producto = $request->products[$i]['id'];
@@ -137,6 +134,7 @@ class CotizacionController extends Controller
 
             DB::commit();
         } catch (\Exception $e) {
+            return $e;
             DB::rollback();
             return response()->json([
                 'is_error' => true,
@@ -171,6 +169,19 @@ class CotizacionController extends Controller
 
             DB::beginTransaction();
 
+            //Verificar si todos los productos tienen stock
+
+            for ($i = 0; $i < count($request->productos); $i++) {
+                $articulo = Articulo::find($request->productos[$i]['id_producto']);
+                if($articulo->cantidad < $request->productos[$i]['cantidad_cotizacion']){
+                    DB::rollback();
+                    return response()->json([
+                        'is_error' => true,
+                        'message' => 'La cotización no se pudo pasar a facturado por falta de stock en el siguiente producto: '.$request->productos[$i]['nombre']
+                    ]);
+                }
+            }
+
             // Se actualiza el estado de la cotizacion a facturado
             $cotizacion = Cotizacion::with('productos')->findOrFail($request->id);
             $cotizacion->facturado = true;
@@ -179,13 +190,15 @@ class CotizacionController extends Controller
 
             // Se crea la nueva factura en estado: "pendiente_pago"
             $invoice = new Factura;
-            $invoice->referencia = $cotizacion->referencia;    // es la misma refeencia de cotizacion ?
+            $invoice->referencia = "FA-";    // es la misma refeencia de cotizacion ?
             $invoice->fecha = $cotizacion->fecha;              // La fecha de facturacion es igual a la fecha de cotizacion ?
             $invoice->id_cliente = $cotizacion->id_cliente;
             $invoice->id_almacen = $cotizacion->id_almacen;
             $invoice->descripcion = $cotizacion->descripcion;  // Para una factura deberá ser otra descripcion ?
             $invoice->estado = 'pendiente_pago';
             $invoice->total = $cotizacion->total;
+            $invoice->save();
+            $invoice->referencia =$invoice->referencia.$invoice->id;
             $invoice->save();
 
             // Se crea un producto factura por cada uno
@@ -202,6 +215,11 @@ class CotizacionController extends Controller
                 $product->save();
             }
 
+            //Se resta de inventario
+
+            $articulo = new ArticulosController;
+            $articulo->handleProductAmount($request);
+
             DB::commit();
 
             return response()->json([
@@ -209,6 +227,8 @@ class CotizacionController extends Controller
                 'message' => 'La cotización se actualizo de manera exitosa y se creó una nueva factura'
             ]);
         } catch(\Exception $e){
+            return $e;
+            DB::rollback();
             return response()->json([
                 'is_error' => true,
                 'error' => $e,

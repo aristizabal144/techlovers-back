@@ -100,7 +100,7 @@ class ArticulosController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
-                'message' => 'Hubo un error al momento de actualizar el producto'
+                'message' => $e
             ]);
         }
     }
@@ -141,27 +141,13 @@ class ArticulosController extends Controller
 
     public function handleProductAmount(Request $request) {
         try {
-            if ($request->creation) {
-                for ($i = 0; $i < count($request->products); $i++) {
-                    $articulo = Articulo::find($request->products[$i]['id']);
-                    $articulo->cantidad = $articulo->cantidad - $request->products[$i]['cantidad_cotizacion'];
-                    $articulo->save();
-                }
-            } else {
-                for ($i = 0; $i < count($request->products); $i++) {
-                    $articulo = Articulo::find($request->products[$i]['id']);
-    
-                    $operation = $request->products[$i]['cantidad_cotizacion'] - $articulo->ultimoMovimiento;
-    
-                    if ($operation >= 0) {
-                        $articulo->cantidad = $articulo->cantidad - $operation;
-                    } else {
-                        $articulo->cantidad = $articulo->cantidad + ($operation * (-1));
-                    }
-                    $articulo->ultimoMovimiento = $operation;
-                    $articulo->save();
-                }
+
+            for ($i = 0; $i < count($request->productos); $i++) {
+                $articulo = Articulo::find($request->productos[$i]['id_producto']);
+                $articulo->cantidad = $articulo->cantidad - $request->productos[$i]['cantidad_cotizacion'];
+                $articulo->save();
             }
+
         } catch (\Exception $e) {
             throw $e;
         }
