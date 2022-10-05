@@ -19,7 +19,7 @@ class ClientesController extends Controller
                 'message' => 'Los clientes se muestran',
                 'data' => $clients
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Los clientes no se muestran',
@@ -53,7 +53,7 @@ class ClientesController extends Controller
             //     'message' => 'El cliente fue registrado de manera correcta',
             //     'data' => $client
             // ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             // DB::rollback();
             return response()->json([
                 'is_error' => true,
@@ -76,7 +76,7 @@ class ClientesController extends Controller
                 'data' => $client
             ]);
             dd($client);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'El cliente seleccionada NO, se ha encontrado'
@@ -103,7 +103,7 @@ class ClientesController extends Controller
                 'message' => 'El cliente se actualizo de manera exitosa',
                 'data' => $client
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error al momento de actualizar el cliente'
@@ -113,14 +113,22 @@ class ClientesController extends Controller
 
     public function destroy($id)
     {
-        try{
+        try {
+            $warehouse = Almacen::where('id_cliente', $id)->get();
+
+            if (count($warehouse) > 0) {
+                return response()->json([
+                    'is_error' => true,
+                    'message' => 'El cliente no se puede eliminar, ya que tiene relacion con almacenes',
+                ], 405);
+            }
             DB::table('clientes')->delete($id);
 
             return response()->json([
                 'is_error' => false,
                 'message' => 'El cliente se ha eliminado correctamente',
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando el cliente'
@@ -133,14 +141,14 @@ class ClientesController extends Controller
         try {
             $input = $request->input('input');
 
-            $clients = Cliente::with('almacenes')->where('nombre','like',"%$input%")
-            ->orWhere('identificacion','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
+            $clients = Cliente::with('almacenes')->where('nombre', 'like', "%$input%")
+                ->orWhere('identificacion', 'like', "%$input%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('size'));
 
             return response()->json($clients);
         } catch (\Exception $e) {
-           throw $e;
+            throw $e;
         }
     }
 }
