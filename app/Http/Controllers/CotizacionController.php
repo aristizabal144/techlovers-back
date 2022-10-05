@@ -205,7 +205,7 @@ class CotizacionController extends Controller
             for ($i = 0; $i < count($request->productos); $i++) {
                 $product = new ProductosFactura;
                 $product->id_factura = $invoice->id;
-                $product->id_producto = $request->productos[$i]['id'];
+                $product->id_producto = $request->productos[$i]['id_producto'];
                 $product->referencia = $request->productos[$i]['referencia'];
                 $product->nombre = $request->productos[$i]['nombre'];
                 $product->cantidad = $request->productos[$i]['cantidad_cotizacion'];

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Factura;
+use App\Http\Controllers\ArticulosController;
 use App\Models\Devolucion;
+use App\Models\ProductosDevolucion;
 use Illuminate\Support\Facades\DB;
 
 class DevolucionesController extends Controller
@@ -37,31 +39,32 @@ class DevolucionesController extends Controller
             $return = new Devolucion;
 
             $return->id_factura = $request->idInvoice;
+            $return->id_cliente = $request->id_cliente;
+            $return->id_almacen = $request->id_almacen;
             $return->referencia = $request->reference;
             $return->fecha = $request->date;
-            $return->id_cliente = $request->customer['id'];
-            $return->id_almacen = $request->store['id'];
-            $return->total = $request->total;
             $return->descripcion = $request->description;
 
 
             $return->save();
 
-            /* Pendiente por revisar para GUARDAR los productos que se traen y modificar una factura ya creada
 
-            for ($i = 0; $i < count($request->products); $i++) {
+            for ($i = 0; $i < count($request->productos); $i++) {
                 $product = new ProductosDevolucion;
-                $product->id_cotizacion = $return->id;
-                $product->id_producto = $request->products[$i]['id'];
-                $product->referencia = $request->products[$i]['referencia'];
-                $product->nombre = $request->products[$i]['nombre'];
-                $product->cantidad_cotizacion = $request->products[$i]['cantidad_cotizacion'];
-                $product->valor_unidad = $request->products[$i]['valor_unidad'];
-                $product->valor_total = $request->products[$i]['valor_total'];
+                $product->id_devolucion = $return->id;
+                $product->id_producto = $request->productos[$i]['id_producto'];
+                $product->referencia = $request->productos[$i]['referencia'];
+                $product->nombre = $request->productos[$i]['nombre'];
+                $product->cantidad = $request->productos[$i]['cantidad'];
 
                 $product->save();
             }
-            */
+
+            //Se suma de inventario
+
+            $articulo = new ArticulosController;
+            $articulo->handleProductReturn($request);
+
             DB::commit();
 
 
@@ -71,7 +74,10 @@ class DevolucionesController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollback();
-            throw $e;
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Hubo un error al momento de registrar la devolución'
+            ]);
         }
     }
 

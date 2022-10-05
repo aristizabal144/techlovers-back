@@ -152,4 +152,18 @@ class ArticulosController extends Controller
             throw $e;
         }
     }
+
+    public function handleProductReturn(Request $request) {
+        try {
+
+            for ($i = 0; $i < count($request->productos); $i++) {
+                $articulo = Articulo::find($request->productos[$i]['id_producto']);
+                $articulo->cantidad = $articulo->cantidad + $request->productos[$i]['cantidad'];
+                $articulo->save();
+            }
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }
