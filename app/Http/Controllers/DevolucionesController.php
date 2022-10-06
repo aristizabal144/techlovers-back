@@ -15,7 +15,7 @@ class DevolucionesController extends Controller
     public function index(Request $request)
     {
         try {
-            $devolucion = Devolucion::orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $devolucion = Devolucion::with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las devoluciones se muestran',
@@ -41,11 +41,13 @@ class DevolucionesController extends Controller
             $return->id_factura = $request->idInvoice;
             $return->id_cliente = $request->id_cliente;
             $return->id_almacen = $request->id_almacen;
-            $return->referencia = $request->reference;
+            $return->referencia = substr($request->reference, 0, 3);
             $return->fecha = $request->date;
             $return->descripcion = $request->description;
 
 
+            $return->save();
+            $return->referencia = substr($request->reference, 0, 3).$return->id;
             $return->save();
 
 

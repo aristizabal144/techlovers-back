@@ -20,6 +20,12 @@ class Devolucion extends Model
         'descripcion'
     ];
 
+    public function cliente() {
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
+    }
+    public function almacen() {
+        return $this->belongsTo(Almacen::class, 'id_almacen', 'id');
+    }
     public function factura() {
         return $this->belongsTo(Factura::class, 'id_factura', 'id');
     }
