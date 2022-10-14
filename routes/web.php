@@ -92,4 +92,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
      $router->post('/return', 'DevolucionesController@create');
      $router->get('/return/{id}', 'DevolucionesController@show');
      $router->delete('/return/{id}', 'DevolucionesController@destroy');
+
+    // ABONOS
+    $router->get('/abonos', 'AbonosController@index');
+    $router->post('/abonos', 'AbonosController@create');
+    $router->delete('/abonos/{id}', 'AbonosController@delete');
+    $router->put('/abonos/{id}', 'AbonosController@update');
 });
