@@ -40,6 +40,7 @@ class CotizacionController extends Controller
 
             $quote = new Cotizacion;
 
+            $quote->id_usuario = $request->id_usuario;
             $quote->referencia =substr($request->reference, 0, 3);
             $quote->fecha = $request->date;
             $quote->id_cliente = $request->customer['id'];
@@ -190,6 +191,7 @@ class CotizacionController extends Controller
 
             // Se crea la nueva factura en estado: "pendiente_pago"
             $invoice = new Factura;
+            $invoice->id_usuario = $cotizacion->id_usuario;
             $invoice->referencia = "FA-";    // es la misma refeencia de cotizacion ?
             $invoice->fecha = $cotizacion->fecha;              // La fecha de facturacion es igual a la fecha de cotizacion ?
             $invoice->id_cliente = $cotizacion->id_cliente;

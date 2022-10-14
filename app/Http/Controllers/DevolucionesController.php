@@ -38,6 +38,7 @@ class DevolucionesController extends Controller
 
             $return = new Devolucion;
 
+            $return->id_usuario = $request->id_usuario;
             $return->id_factura = $request->idInvoice;
             $return->id_cliente = $request->id_cliente;
             $return->id_almacen = $request->id_almacen;

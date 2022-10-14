@@ -9,6 +9,7 @@ class CreateCotizacionsTable extends Migration
     public function up() {
         Schema::create('cotizacions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('id_usuario');
             $table->string('referencia');
             $table->date('fecha');
             $table->integer('id_cliente');

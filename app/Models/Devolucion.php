@@ -12,6 +12,7 @@ class Devolucion extends Model
 
     protected $fillable = [
         'id',
+        'id_usuario',
         'id_factura',
         'id_cliente',
         'id_almacen',
