@@ -199,6 +199,7 @@ class CotizacionController extends Controller
             $invoice->descripcion = $cotizacion->descripcion;  // Para una factura deberá ser otra descripcion ?
             $invoice->estado = 'pendiente_pago';
             $invoice->total = $cotizacion->total;
+            $invoice->faltante_pago = $cotizacion->total;
             $invoice->save();
             $invoice->referencia =$invoice->referencia.$invoice->id;
             $invoice->save();

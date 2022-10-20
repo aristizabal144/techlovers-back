@@ -34,13 +34,13 @@ class AbonosController extends Controller
       $abonos->id_factura = $request->id_factura;
       $abonos->estado = $request->estado;
       $abonos->fecha = $request->fecha;
-      $abonos->valor_abono = $request->valor_abono;
+      $abonos->valor = $request->valor_abono;
       $abonos->descripcion = $request->descripcion;
 
       $abonos->save();
     } catch (\Throwable $th) {
       return response()->json([
-        'is_error' => true,
+        'is_error' => $th,
         'message' => 'El registro no se pudo realizar de manera correcta'
       ]);
     }

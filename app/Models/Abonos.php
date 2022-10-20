@@ -15,7 +15,7 @@ class Abonos extends Model {
     'id_factura',
     'estado',
     'fecha',
-    'valor_abono',
+    'valor',
     'descripcion'
   ];
 
