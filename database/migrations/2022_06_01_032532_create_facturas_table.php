@@ -17,6 +17,7 @@ class CreateFacturasTable extends Migration
             $table->string('descripcion');
             $table->enum('estado',array('pendiente_pago','pagado'));
             $table->integer('total');
+            $table->integer('faltante_pago');
             $table->timestamps();
         });
     }
