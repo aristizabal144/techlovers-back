@@ -82,6 +82,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // FACTURAS
     $router->get('/invoice', 'FacturaController@index');
     $router->post('/invoice', 'FacturaController@create');
+    $router->post('/invoice/pay', 'FacturaController@pagarTotalidadFactura');
     $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');

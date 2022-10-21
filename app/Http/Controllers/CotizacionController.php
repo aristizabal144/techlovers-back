@@ -200,6 +200,10 @@ class CotizacionController extends Controller
             $invoice->estado = 'pendiente_pago';
             $invoice->total = $cotizacion->total;
             $invoice->faltante_pago = $cotizacion->total;
+            $invoice->total_descuento = $cotizacion->total;
+            $invoice->valor_descuento = 0;
+            $invoice->valor_flete = 0;
+            $invoice->valor_averias = 0;
             $invoice->save();
             $invoice->referencia =$invoice->referencia.$invoice->id;
             $invoice->save();

@@ -19,7 +19,12 @@ class Factura extends Model
         'id_almacen',
         'descripcion',
         'estado',
-        'total'
+        'total',
+        'total_descuento',
+        'faltante_pago',
+        'valor_descuento',
+        'valor_flete',
+        'valor_averias'
     ];
 
     public function cliente() {
