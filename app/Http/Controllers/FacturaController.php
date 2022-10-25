@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Abonos;
 use App\Models\Factura;
 use App\Models\ProductosFactura;
 use Illuminate\Http\Request;
@@ -90,6 +91,49 @@ class FacturaController extends Controller
             return response()->json([
                 'is_error' => true,
                 'message' => 'La factura seleccionada NO, se ha encontrado'
+            ]);
+        }
+    }
+
+    public function pagarTotalidadFactura(Request $request){
+
+        try {
+
+            DB::beginTransaction();
+
+            $factura = Factura::findOrFail($request->id_factura);
+
+            $factura->total_descuento = $factura->total - ($request->valor_descuento + $request->valor_averias);
+            $factura->valor_descuento = $request->valor_descuento;
+            $factura->valor_flete = $request->valor_flete;
+            $factura->valor_averias = $request->valor_averias;
+            $factura->faltante_pago = 0;
+            $factura->estado = 'pagado';
+
+    
+            $factura->save();
+    
+            $carbon = new \Carbon\Carbon();
+    
+            $abono = new Abonos();
+
+            $abonosYaRealizados = Abonos::where('id_factura', $request->id_factura)->sum('valor');
+
+            $abono->id_factura = $request->id_factura;
+            $abono->estado = 'efectivo';
+            $abono->fecha = $carbon->now();
+            $abono->valor = $factura->total_descuento - $abonosYaRealizados;
+            $abono->descripcion = 'Ultimo pago';
+
+            $abono->save();
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'is_error' => true,
+                'message' => 'El pago no se pudo realizar con exito'
             ]);
         }
     }

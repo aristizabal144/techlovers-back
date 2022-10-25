@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\DB;
 class AbonosController extends Controller
 {
 
-  public function index(Request $request)
-  {
+  public function index(Request $request) {
     try {
-      $abonos = Abonos::all();
+      $abonos = Abonos::where('id_factura', $request->input('id_factura'))->get();
       return response()->json([
         'is_error' => false,
         'message' => 'Los abonos se muestran',

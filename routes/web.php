@@ -7,16 +7,6 @@ use App\Http\Controllers\ArticulosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\AlmacenesController;
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
 
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
 $router->post('user', ['as' => 'user.store', 'uses' => 'UsuariosController@store']);
@@ -82,6 +72,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // FACTURAS
     $router->get('/invoice', 'FacturaController@index');
     $router->post('/invoice', 'FacturaController@create');
+    $router->post('/invoice/pay', 'FacturaController@pagarTotalidadFactura');
     $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');
