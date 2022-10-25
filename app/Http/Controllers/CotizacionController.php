@@ -11,13 +11,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ArticulosController;
 use Illuminate\Support\Facades\DB;
 
-class CotizacionController extends Controller
-{
+class CotizacionController extends Controller {
 
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         try {
-            $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            if ($request->input('id_usuario')) {
+                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->where('id_usuario', $request->input('id_usuario'))->orderBy('created_at', 'desc')->paginate($request->input('size'));
+                return response()->json([
+                    'is_error' => false,
+                    'message' => 'Las cotizaciones del se muestran',
+                    'data' => $cotizacion
+                ]);
+            } else {
+                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));;
+            }
+
+
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las cotizaciones se muestran',
@@ -41,7 +50,7 @@ class CotizacionController extends Controller
             $quote = new Cotizacion;
 
             $quote->id_usuario = $request->id_usuario;
-            $quote->referencia =substr($request->reference, 0, 3);
+            $quote->referencia = substr($request->reference, 0, 3);
             $quote->fecha = $request->date;
             $quote->id_cliente = $request->customer['id'];
             $quote->id_almacen = $request->store['id'];
@@ -50,7 +59,7 @@ class CotizacionController extends Controller
             $quote->facturado = false;
 
             $quote->save();
-            $quote->referencia =substr($request->reference, 0, 3).$quote->id;
+            $quote->referencia = substr($request->reference, 0, 3) . $quote->id;
             $quote->save();
             // return count($request->products);
 
@@ -117,10 +126,10 @@ class CotizacionController extends Controller
 
             $quote->save();
 
-            ProductosCotizacion::where('id_cotizacion',$request->id)->delete();
+            ProductosCotizacion::where('id_cotizacion', $request->id)->delete();
 
             for ($i = 0; $i < count($request->products); $i++) {
-                
+
                 $product = new ProductosCotizacion;
                 $product->id_cotizacion = $quote->id;
                 $product->id_producto = $request->products[$i]['id'];
@@ -174,11 +183,11 @@ class CotizacionController extends Controller
 
             for ($i = 0; $i < count($request->productos); $i++) {
                 $articulo = Articulo::find($request->productos[$i]['id_producto']);
-                if($articulo->cantidad < $request->productos[$i]['cantidad_cotizacion']){
+                if ($articulo->cantidad < $request->productos[$i]['cantidad_cotizacion']) {
                     DB::rollback();
                     return response()->json([
                         'is_error' => true,
-                        'message' => 'La cotización no se pudo pasar a facturado por falta de stock en el siguiente producto: '.$request->productos[$i]['nombre']
+                        'message' => 'La cotización no se pudo pasar a facturado por falta de stock en el siguiente producto: ' . $request->productos[$i]['nombre']
                     ]);
                 }
             }
@@ -205,7 +214,7 @@ class CotizacionController extends Controller
             $invoice->valor_flete = 0;
             $invoice->valor_averias = 0;
             $invoice->save();
-            $invoice->referencia =$invoice->referencia.$invoice->id;
+            $invoice->referencia = $invoice->referencia . $invoice->id;
             $invoice->save();
 
             // Se crea un producto factura por cada uno
@@ -233,7 +242,7 @@ class CotizacionController extends Controller
                 'is_error' => false,
                 'message' => 'La cotización se actualizo de manera exitosa y se creó una nueva factura'
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return $e;
             DB::rollback();
             return response()->json([
@@ -249,13 +258,13 @@ class CotizacionController extends Controller
         try {
             $input = $request->input('input');
 
-            $cotizacion = Cotizacion::where('referencia','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
+            $cotizacion = Cotizacion::where('referencia', 'like', "%$input%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('size'));
 
             return response()->json($cotizacion);
         } catch (\Exception $e) {
-           throw $e;
+            throw $e;
         }
     }
 }
