@@ -13,7 +13,7 @@ class FacturaController extends Controller
     public function index(Request $request)
     {
         try {
-            $factura = Factura::with('productos')->with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $factura = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las facturas se muestran',
@@ -80,7 +80,7 @@ class FacturaController extends Controller
     public function show($id)
     {
         try {
-            $factura = Factura::with('productos')->with('cliente')->with('almacen')->find($id);
+            $factura = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->find($id);
 
             return response()->json([
                 'is_error' => false,

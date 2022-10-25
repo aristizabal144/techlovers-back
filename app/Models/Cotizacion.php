@@ -26,6 +26,10 @@ class Cotizacion extends Model
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id');
     }
 
+    public function encargado() {
+        return $this->belongsTo(User::class, 'id_usuario', 'id');
+    }
+
     public function almacen() {
         return $this->belongsTo(Almacen::class, 'id_almacen', 'id');
     }

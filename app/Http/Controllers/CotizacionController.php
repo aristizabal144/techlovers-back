@@ -16,14 +16,14 @@ class CotizacionController extends Controller {
     public function index(Request $request) {
         try {
             if ($request->input('id_usuario')) {
-                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->where('id_usuario', $request->input('id_usuario'))->orderBy('created_at', 'desc')->paginate($request->input('size'));
+                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->with('encargado')->where('id_usuario', $request->input('id_usuario'))->orderBy('created_at', 'desc')->paginate($request->input('size'));
                 return response()->json([
                     'is_error' => false,
                     'message' => 'Las cotizaciones del se muestran',
                     'data' => $cotizacion
                 ]);
             } else {
-                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->orderBy('created_at', 'desc')->paginate($request->input('size'));;
+                $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));;
             }
 
 
@@ -93,7 +93,7 @@ class CotizacionController extends Controller {
     public function show($id)
     {
         try {
-            $cotizacion = Cotizacion::with('productos.producto')->with('cliente')->with('almacen')->find($id);
+            $cotizacion = Cotizacion::with('productos.producto')->with('cliente')->with('almacen')->with('encargado')->find($id);
 
             return response()->json([
                 'is_error' => false,
