@@ -95,7 +95,8 @@ class FacturaController extends Controller
         }
     }
 
-    public function pagarTotalidadFactura(Request $request){
+    public function pagarTotalidadFactura(Request $request)
+    {
 
         try {
 
@@ -110,11 +111,11 @@ class FacturaController extends Controller
             $factura->faltante_pago = 0;
             $factura->estado = 'pagado';
 
-    
+
             $factura->save();
-    
+
             $carbon = new \Carbon\Carbon();
-    
+
             $abono = new Abonos();
 
             $abonosYaRealizados = Abonos::where('id_factura', $request->id_factura)->sum('valor');
@@ -128,7 +129,6 @@ class FacturaController extends Controller
             $abono->save();
 
             DB::commit();
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -155,6 +155,20 @@ class FacturaController extends Controller
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando la factura'
             ]);
+        }
+    }
+
+    public function searchByParams(Request $request)
+    {
+        try {
+            $referencia = $request->input('input');
+            $facturas = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->where('referencia', 'like', "%$referencia%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('size'));
+
+            return response()->json($facturas);
+        } catch (\Exception $e) {
+            throw $e;
         }
     }
 }
