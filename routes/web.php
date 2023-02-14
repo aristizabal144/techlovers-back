@@ -61,22 +61,24 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     // COTIZACIONES
     $router->get('/quote/quote-search', 'CotizacionController@searchByParams');
-    $router->get('/quote', 'CotizacionController@index');
-    $router->post('/quote', 'CotizacionController@create');
     $router->get('/quote/{id}', 'CotizacionController@show');
-    $router->delete('/quote/{id}', 'CotizacionController@destroy');
+    $router->get('/quote', 'CotizacionController@index');
     $router->put('/quote/{id}', 'CotizacionController@update');
+    $router->post('/quote', 'CotizacionController@create');
     $router->put('/quote', 'CotizacionController@check');
+    $router->delete('/quote/{id}', 'CotizacionController@destroy');
+    
 
 
     // FACTURAS
+    $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
     $router->get('/invoice', 'FacturaController@index');
+    $router->get('/invoice/{id}', 'FacturaController@show');
     $router->post('/invoice', 'FacturaController@create');
     $router->post('/invoice/pay', 'FacturaController@pagarTotalidadFactura');
-    $router->get('/invoice/{id}', 'FacturaController@show');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');
-    $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
+    
 
      // DEVOLUCIONES
      $router->get('/return', 'DevolucionesController@index');
