@@ -19,6 +19,7 @@ class CreateArticulosTable extends Migration
             $table->float('porcentaje_venta');
             $table->integer('valor_venta');
             $table->integer('cantidad');
+            $table->boolean('estado');
             $table->text('descripcion');
             $table->string('urlImagen');
             $table->integer('ultimoMovimiento')->default(0);

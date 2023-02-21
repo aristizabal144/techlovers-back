@@ -12,7 +12,14 @@ class ArticulosController extends Controller
     public function index(Request $request)
     {
         try {
-            $products = Articulo::orderBy('created_at', 'desc')->paginate($request->input('size'));
+
+            $products = new Articulo();
+            
+            if($request->input('state') != 2){
+                $products = $products->where('estado', (int)$request->input('state'));
+            }
+            $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
+
             return response()->json([
                 'is_error' => false,
                 'message' => 'Los productos se muestran',
@@ -39,6 +46,7 @@ class ArticulosController extends Controller
             $products->porcentaje_venta = $request->salePercentage;
             $products->valor_venta = $request->saleValue;
             $products->cantidad = $request->amount;
+            $products->estado = $request->state  == true ? 1 : 0;
             $products->descripcion = $request->description;
             $products->urlImagen = $request->urlImagen;
 
@@ -87,6 +95,7 @@ class ArticulosController extends Controller
             $products->porcentaje_venta = $request->porcentaje_venta;
             $products->valor_venta = $request->valor_venta;
             $products->cantidad = $request->cantidad;
+            $products->estado = $request->estado == true ? 1 : 0;
             $products->descripcion = $request->descripcion;
             $products->urlImagen = $request->urlImagen;
 
@@ -127,11 +136,21 @@ class ArticulosController extends Controller
         try {
             $input = $request->input('input');
 
-            $products = Articulo::where('nombre','like',"%$input%")
-            ->orWhere('referencia','like',"%$input%")
-            ->orWhere('codigo_barras','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
+            $products = new Articulo();
+
+            $products = $products->where(function($q) use ($input) {
+                $q->where('nombre', 'like', "%$input%")
+                  ->orWhere('referencia', 'like', "%$input%")
+                  ->orWhere('codigo_barras', 'like', "%$input%");
+             });
+
+            if($request->input('state') != 2){
+                $products = $products->where('estado', (int)$request->input('state'));
+            }
+
+            
+
+            $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
 
             return response()->json($products);
         } catch (\Exception $e) {
