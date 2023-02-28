@@ -7,6 +7,7 @@ use App\Models\Factura;
 use App\Models\ProductosFactura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class FacturaController extends Controller
 {
@@ -110,6 +111,7 @@ class FacturaController extends Controller
             $factura->valor_averias = $request->valor_averias;
             $factura->faltante_pago = 0;
             $factura->estado = 'pagado';
+            $factura->fecha_pago = Carbon::now();
 
 
             $factura->save();
@@ -165,6 +167,25 @@ class FacturaController extends Controller
             $facturas = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->where('referencia', 'like', "%$referencia%")
                 ->orderBy('created_at', 'desc')
                 ->paginate($request->input('size'));
+
+            return response()->json($facturas);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+
+    //----------------------------------------------------------------
+    //|                   DASHBOARD FUNCTIONS                        |
+    //----------------------------------------------------------------
+
+    public function searchBulletInformation(Request $request)
+    {
+        try {
+            $desde = $request->input('from');
+            $hasta = $request->input('to');
+
+            $facturas = Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'pagado')->sum('total_descuento');
 
             return response()->json($facturas);
         } catch (\Exception $e) {

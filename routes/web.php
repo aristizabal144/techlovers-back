@@ -92,4 +92,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/abonos', 'AbonosController@create');
     $router->delete('/abonos/{id}', 'AbonosController@delete');
     $router->put('/abonos/{id}', 'AbonosController@update');
+
+    // DASHBOARD
+    $router->get('/dashboard/return-bullet', 'FacturaController@searchBulletInformation');
 });

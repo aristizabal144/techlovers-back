@@ -24,7 +24,8 @@ class Factura extends Model
         'faltante_pago',
         'valor_descuento',
         'valor_flete',
-        'valor_averias'
+        'valor_averias',
+        'fecha_pago'
     ];
 
     public function cliente() {
