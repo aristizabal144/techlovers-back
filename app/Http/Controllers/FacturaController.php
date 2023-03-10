@@ -185,9 +185,26 @@ class FacturaController extends Controller
             $desde = $request->input('from');
             $hasta = $request->input('to');
 
-            $facturas = Factura::whereBetween('fecha', [$desde, $hasta])->where('estado', 'pagado')->sum('total_descuento');
 
-            return response()->json($facturas);
+            $facturasPagadas = Factura::where('estado', 'pagado')->whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->sum('total_descuento');
+            $cartera = Factura::where('estado', 'pendiente_pago')->sum('total_descuento');
+
+            
+            return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera] );
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function searchInvoicePayments(Request $request)
+    {
+        try {
+            $desde = $request->input('from');
+            $hasta = $request->input('to');
+
+            $facturasPagadas = Factura::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->get();
+
+            return response()->json(['facturas_pagadas' => $facturasPagadas] );
         } catch (\Exception $e) {
             throw $e;
         }

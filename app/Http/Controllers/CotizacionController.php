@@ -233,8 +233,8 @@ class CotizacionController extends Controller {
 
             //Se resta de inventario
 
-            $articulo = new ArticulosController;
-            $articulo->handleProductAmount($request);
+            /* $articulo = new ArticulosController;
+            $articulo->handleProductAmount($request); */
 
             DB::commit();
 
