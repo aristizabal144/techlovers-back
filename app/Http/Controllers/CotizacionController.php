@@ -181,7 +181,7 @@ class CotizacionController extends Controller {
 
             //Verificar si todos los productos tienen stock
 
-            for ($i = 0; $i < count($request->productos); $i++) {
+           /*  for ($i = 0; $i < count($request->productos); $i++) {
                 $articulo = Articulo::find($request->productos[$i]['id_producto']);
                 if ($articulo->cantidad < $request->productos[$i]['cantidad_cotizacion']) {
                     DB::rollback();
@@ -190,7 +190,7 @@ class CotizacionController extends Controller {
                         'message' => 'La cotización no se pudo pasar a facturado por falta de stock en el siguiente producto: ' . $request->productos[$i]['nombre']
                     ]);
                 }
-            }
+            } */
 
             // Se actualiza el estado de la cotizacion a facturado
             $cotizacion = Cotizacion::with('productos')->findOrFail($request->id);
