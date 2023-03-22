@@ -129,7 +129,7 @@ class AlmacenesController extends Controller
         try {
             $input = $request->input('input');
 
-            $stores = Almacen::where('nombre','like',"%$input%")
+            $stores = Almacen::with('cliente')->where('nombre','like',"%$input%")
             ->orWhere('nit','like',"%$input%")
             ->orWhere('encargado','like',"%$input%")
             ->orderBy('created_at', 'desc')
