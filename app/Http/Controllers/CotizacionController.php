@@ -192,8 +192,17 @@ class CotizacionController extends Controller {
                 }
             }
 
-            // Se actualiza el estado de la cotizacion a facturado
             $cotizacion = Cotizacion::with('productos')->findOrFail($request->id);
+            // Verificar el estado de la cotizacion
+
+            if ($cotizacion->facturado) {
+                return response()->json([
+                    'is_error' => true,
+                    'message' => 'La cotización ya esta facturada.'
+                ]);
+            }
+
+            // Se actualiza el estado de la cotizacion a facturado
             $cotizacion->facturado = true;
 
             $cotizacion->save();
@@ -258,7 +267,7 @@ class CotizacionController extends Controller {
         try {
             $input = $request->input('input');
 
-            $cotizacion = Cotizacion::where('referencia', 'like', "%$input%")
+            $cotizacion = Cotizacion::with('productos')->with('cliente')->with('almacen')->with('encargado')->where('referencia', 'like', "%$input%")
                 ->orderBy('created_at', 'desc')
                 ->paginate($request->input('size'));
 
