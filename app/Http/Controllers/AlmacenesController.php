@@ -18,7 +18,7 @@ class AlmacenesController extends Controller
                 'message' => 'Los almacenes se muestran',
                 'data' => $stores
             ]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Los almacenes no se muestran',
@@ -31,7 +31,7 @@ class AlmacenesController extends Controller
     {
         try {
 
-            for ($i=0; $i < count($request->stores); $i++) {
+            for ($i = 0; $i < count($request->stores); $i++) {
                 $store = new Almacen;
                 $store->nit = $request->stores[$i]['nit'];
                 $store->nombre = $request->stores[$i]['nombre'];
@@ -42,14 +42,14 @@ class AlmacenesController extends Controller
                 $store->telefono = $request->stores[$i]['telefono'];
                 $store->id_cliente = $request->stores[$i]['id_cliente'];
                 $store->descripcion = $request->stores[$i]['descripcion'];
-                $store->save(); 
+                $store->save();
             }
 
             return response()->json([
                 'is_error' => false,
                 'message' => 'El almacen fue registrado de manera correcta',
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'El almacen no se pudo registrar de manera correcta',
@@ -69,7 +69,7 @@ class AlmacenesController extends Controller
                 'message' => 'El almacen seleccionado, se ha encontrado',
                 'data' => $store
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'El almacen seleccionada NO, se ha encontrado'
@@ -100,7 +100,7 @@ class AlmacenesController extends Controller
                 'message' => 'El almacen se actualizo de manera exitosa',
                 'data' => $store
             ]);
-        } catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error al momento de actualizar el almacen'
@@ -110,13 +110,13 @@ class AlmacenesController extends Controller
 
     public function destroy($id)
     {
-        try{
+        try {
             DB::table('almacenes')->delete($id);
             return response()->json([
                 'is_error' => false,
                 'message' => 'El almacen se ha eliminado correctamente',
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Hubo un error eliminando el almacen'
@@ -128,20 +128,23 @@ class AlmacenesController extends Controller
     {
         try {
             $input = $request->input('input');
+            $stores = Almacen::with('cliente')->where('nombre', 'like', "%$input%")
+                ->orWhere('nit', 'like', "%$input%")
+                ->orWhere('encargado', 'like', "%$input%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($request->input('size'));
 
-            $stores = Almacen::with('cliente')->where('nombre','like',"%$input%")
-            ->orWhere('nit','like',"%$input%")
-            ->orWhere('encargado','like',"%$input%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->input('size'));
-
-            return response()->json($stores);
+            return response()->json([
+                'is_error' => false,
+                'data' => $stores
+            ]);
         } catch (\Exception $e) {
-           throw $e;
+            throw $e;
         }
     }
 
-    public function search(Request $request){
+    public function search(Request $request)
+    {
 
         try {
 
@@ -149,20 +152,19 @@ class AlmacenesController extends Controller
             $size = $request->input('size');
 
             $response = Almacen::with('cliente')
-            ->whereHas('cliente', function ($query) use ($dataToSearch) {
-                $query->where('nombre', 'like', '%'.$dataToSearch.'%')
-                ->orWhere('identificacion', 'like', '%'.$dataToSearch.'%')
-                ->orWhere('telefono_fijo', 'like', '%'.$dataToSearch.'%')
-                ->orWhere('celular', 'like', '%'.$dataToSearch.'%');
-            })
-            ->orWhere('nombre', 'like', '%'.$dataToSearch.'%')
-            ->orWhere('nit','like',"%$dataToSearch%")
-            ->orWhere('encargado','like',"%$dataToSearch%")
-            ->orWhere('telefono','like',"%$dataToSearch%")
-            ->orderBy('created_at', 'desc')
-            ->paginate($size);
+                ->whereHas('cliente', function ($query) use ($dataToSearch) {
+                    $query->where('nombre', 'like', '%' . $dataToSearch . '%')
+                        ->orWhere('identificacion', 'like', '%' . $dataToSearch . '%')
+                        ->orWhere('telefono_fijo', 'like', '%' . $dataToSearch . '%')
+                        ->orWhere('celular', 'like', '%' . $dataToSearch . '%');
+                })
+                ->orWhere('nombre', 'like', '%' . $dataToSearch . '%')
+                ->orWhere('nit', 'like', "%$dataToSearch%")
+                ->orWhere('encargado', 'like', "%$dataToSearch%")
+                ->orWhere('telefono', 'like', "%$dataToSearch%")
+                ->orderBy('created_at', 'desc')
+                ->paginate($size);
             return response()->json($response);
-
         } catch (\Exception $e) {
             throw $e;
         }
