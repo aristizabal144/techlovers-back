@@ -14,8 +14,8 @@ class ArticulosController extends Controller
         try {
 
             $products = new Articulo();
-            
-            if($request->input('state') != 2){
+
+            if ($request->input('state') != 2) {
                 $products = $products->where('estado', (int)$request->input('state'));
             }
             $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
@@ -138,17 +138,17 @@ class ArticulosController extends Controller
 
             $products = new Articulo();
 
-            $products = $products->where(function($q) use ($input) {
+            $products = $products->where(function ($q) use ($input) {
                 $q->where('nombre', 'like', "%$input%")
-                  ->orWhere('referencia', 'like', "%$input%")
-                  ->orWhere('codigo_barras', 'like', "%$input%");
-             });
+                    ->orWhere('referencia', 'like', "%$input%")
+                    ->orWhere('codigo_barras', 'like', "%$input%");
+            });
 
-            if($request->input('state') != 2){
+            if ($request->input('state') != 2) {
                 $products = $products->where('estado', (int)$request->input('state'));
             }
 
-            
+
 
             $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
 
@@ -158,21 +158,22 @@ class ArticulosController extends Controller
         }
     }
 
-    public function handleProductAmount(Request $request) {
+    public function handleProductAmount($data, $operacion)
+    {
         try {
 
-            for ($i = 0; $i < count($request->productos); $i++) {
-                $articulo = Articulo::find($request->productos[$i]['id_producto']);
-                $articulo->cantidad = $articulo->cantidad - $request->productos[$i]['cantidad_cotizacion'];
+            for ($i = 0; $i < count($data); $i++) {
+                $articulo = Articulo::find($data[$i]['id_producto']);
+                $articulo->cantidad = $operacion === 'cotizacion' ? ($articulo->cantidad - $data[$i]['cantidad_cotizacion']) : ($articulo->cantidad + $data[$i]['cantidad']);
                 $articulo->save();
             }
-
         } catch (\Exception $e) {
             throw $e;
         }
     }
 
-    public function handleProductReturn(Request $request) {
+    public function handleProductReturn(Request $request)
+    {
         try {
 
             for ($i = 0; $i < count($request->productos); $i++) {
@@ -180,7 +181,6 @@ class ArticulosController extends Controller
                 $articulo->cantidad = $articulo->cantidad + $request->productos[$i]['cantidad'];
                 $articulo->save();
             }
-
         } catch (\Exception $e) {
             throw $e;
         }

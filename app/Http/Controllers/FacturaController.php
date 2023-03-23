@@ -143,22 +143,31 @@ class FacturaController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('facturas')->delete($id);
-
+            DB::beginTransaction();
+    
             $product_factura = ProductosFactura::where('id_factura', $id);
+            $products_get = $product_factura->get();
+            $articulo = new ArticulosController;
+            $articulo->handleProductAmount($products_get, 'factura');
             $product_factura->delete();
-
+    
+            Factura::where('id', $id)->delete();
+    
+            DB::commit();
             return response()->json([
                 'is_error' => false,
                 'message' => 'La factura se ha eliminado correctamente',
             ]);
         } catch (\Exception $e) {
+            DB::rollback();
             return response()->json([
                 'is_error' => true,
-                'message' => 'Hubo un error eliminando la factura'
+                'error' => $e,
+                'message' => 'Hubo un error al momento de eliminar la factura'
             ]);
         }
     }
+    
 
     public function searchByParams(Request $request)
     {
@@ -189,8 +198,8 @@ class FacturaController extends Controller
             $facturasPagadas = Factura::where('estado', 'pagado')->whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->sum('total_descuento');
             $cartera = Factura::where('estado', 'pendiente_pago')->sum('total_descuento');
 
-            
-            return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera] );
+
+            return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera]);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -204,7 +213,7 @@ class FacturaController extends Controller
 
             $facturasPagadas = Factura::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->get();
 
-            return response()->json(['facturas_pagadas' => $facturasPagadas] );
+            return response()->json(['facturas_pagadas' => $facturasPagadas]);
         } catch (\Exception $e) {
             throw $e;
         }
