@@ -41,6 +41,6 @@ class FacturaContabilidad extends Model
     }
 
     public function productos() {
-        return $this->hasMany(ProductosFactura::class, 'id_factura', 'id');
+        return $this->hasMany(ProductosFacturaContabilidad::class, 'id_factura', 'id');
     }
 }

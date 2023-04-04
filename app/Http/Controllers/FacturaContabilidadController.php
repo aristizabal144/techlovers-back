@@ -234,8 +234,7 @@ class FacturaContabilidadController extends Controller
   public function storageSave(Request $request)
   {
 
-
-    return base64_decode(\Storage::get('cris.pdf'));
+    return response()->json(['base64PDF' => base64_encode(\Storage::get('cris.pdf'))]);
 
     try {
       //obtenemos el campo file definido en el formulario
