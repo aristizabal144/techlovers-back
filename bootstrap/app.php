@@ -26,6 +26,11 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 $app->withEloquent();
 
+
+// Defined "ide-helper" namespace.
+if ($app->environment() !== 'production') {
+    $app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+}
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -93,7 +98,7 @@ $app->middleware([
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 

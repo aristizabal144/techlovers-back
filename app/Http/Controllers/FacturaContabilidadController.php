@@ -11,21 +11,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class FacturaController extends Controller
+class FacturaContabilidadController extends Controller
 {
   public function index(Request $request)
   {
     try {
-      $factura = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+      $facturaElectronica = FacturaContabilidad::with('productos')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
       return response()->json([
         'is_error' => false,
-        'message' => 'Las facturas se muestran',
-        'data' => $factura
+        'message' => 'Las facturas electronicas se muestran',
+        'data' => $facturaElectronica
       ]);
     } catch (\Exception $e) {
+      return $e;
       return response()->json([
         'is_error' => true,
-        'message' => 'Las facturas no se muestran',
+        'message' => 'Las facturas electronicas no se muestran',
         'error' => $e
       ]);
     }
@@ -39,11 +40,11 @@ class FacturaController extends Controller
 
       // Se crea la nueva factura en estado: "pendiente_pago"
       $invoice = new FacturaContabilidad;
-      $invoice->id_usuario = $request->encargado->id;
+      $invoice->id_usuario = $request->encargado['id'];
       $invoice->referencia = "CON-";    // es la misma refeencia de cotizacion ?
       $invoice->fecha = $request->fecha;              // La fecha de facturacion es igual a la fecha de cotizacion ?
-      $invoice->id_cliente = $request->cliente->id;
-      $invoice->id_almacen = $request->almacen->id;
+      $invoice->id_cliente = $request->cliente['id'];
+      $invoice->id_almacen = $request->almacen['id'];
       $invoice->descripcion = $request->descripcion;  // Para una factura deberá ser otra descripcion ?
       $invoice->estado = 'pendiente_facturar';
       $invoice->total = $request->total - ($request->total * 0.60);
@@ -63,7 +64,7 @@ class FacturaController extends Controller
         $product->id_producto = $request->productos[$i]['id_producto'];
         $product->referencia = $request->productos[$i]['referencia'];
         $product->nombre = $request->productos[$i]['nombre'];
-        $product->cantidad = $request->productos[$i]['cantidad_cotizacion'];
+        $product->cantidad = $request->productos[$i]['cantidad'];
         $product->valor_total_unidad = $request->productos[$i]['valor_unidad'] - ($request->productos[$i]['valor_unidad'] * 0.60);
         $product->valor_iva = $product->valor_total_unidad * 0.19;
         $product->valor_unidad = $product->valor_total_unidad - $product->valor_iva;
@@ -229,4 +230,37 @@ class FacturaController extends Controller
       throw $e;
     }
   }
+
+  public function storageSave(Request $request)
+  {
+
+
+    return base64_decode(\Storage::get('cris.pdf'));
+
+    try {
+      //obtenemos el campo file definido en el formulario
+      $file = $request->file('file');
+
+      //obtenemos el nombre del archivo
+      $nombre = $file->getClientOriginalName();
+
+      //indicamos que queremos guardar un nuevo archivo en el disco local
+      \Storage::disk('local')->putFileAs('.',  $file, $nombre);
+
+      return response()->json("archivo guardado");
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
+  public function storageGet(Request $request)
+  {
+    try {
+
+      return response()->json(['facturas_pagadas' => 'ok']);
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
 }

@@ -97,6 +97,11 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/dashboard/return-bullet', 'FacturaController@searchBulletInformation');
     $router->get('/dashboard/return-invoice-payments', 'FacturaController@searchInvoicePayments');
 
-    // Contable
+    // CONTABLE
+    $router->get('/factura-contable', 'FacturaContabilidadController@index');
     $router->post('/factura-contable', 'FacturaContabilidadController@create');
+
+
+    //STORAGE
+    $router->post('/storage', 'FacturaContabilidadController@storageSave');
 });

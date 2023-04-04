@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductosFacturaContabilidad extends Model
 {
-    public $table = 'productos_factura_contabilidad';
+    public $table = 'productos_contabilidad';
 
     protected $primaryKey = 'id';
 
