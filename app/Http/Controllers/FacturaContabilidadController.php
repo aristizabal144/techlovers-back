@@ -7,6 +7,7 @@ use App\Models\Factura;
 use App\Models\FacturaContabilidad;
 use App\Models\ProductosFactura;
 use App\Models\ProductosFacturaContabilidad;
+use App\Http\Controllers\ArticulosController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -91,6 +92,41 @@ class FacturaContabilidadController extends Controller
   }
 
 
+  public function destroy($id)
+    {
+        try {
+            DB::beginTransaction();
+    
+            $product_factura = ProductosFacturaContabilidad::where('id_factura', $id);
+            $products_get = $product_factura->get();
+
+            $invoice = FacturaContabilidad::findOrFail($id);
+
+            if($invoice['estado'] != 'pendiente_facturar'){
+              $articulo = new ArticulosController;
+              $articulo->handleProductAmountContabilidad($products_get, 'suma');
+            }
+
+            $product_factura->delete();
+    
+            FacturaContabilidad::where('id', $id)->delete();
+    
+            DB::commit();
+            return response()->json([
+                'is_error' => false,
+                'message' => 'La factura se ha eliminado correctamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'is_error' => true,
+                'error' => $e,
+                'message' => 'Hubo un error al momento de eliminar la factura'
+            ]);
+        }
+    }
+
+
   public function storageSave(Request $request)
   {
 
@@ -107,9 +143,13 @@ class FacturaContabilidadController extends Controller
       //indicamos que queremos guardar un nuevo archivo en el disco local
       \Storage::disk('local')->putFileAs('/PDF_FACTURACION',  $file, $reference.'.pdf');
 
-      $invoice = FacturaContabilidad::findOrFail($id);
+      $invoice = FacturaContabilidad::with('productos')->findOrFail($id);
       $invoice->estado = 'facturado';
       $invoice->save();
+
+
+      $articulo = new ArticulosController;
+      $articulo->handleProductAmountContabilidad($invoice['productos'], 'resta');
 
       DB::commit();
       
@@ -127,7 +167,23 @@ class FacturaContabilidadController extends Controller
   {
     try {
 
-      return response()->json(['facturas_pagadas' => 'ok']);
+      return response()->json(['base64PDF' => base64_encode(\Storage::get('PDF_FACTURACION/'.$request->input('nameFile').'.pdf'))]);
+    } catch (\Exception $e) {
+      throw $e;
+    }
+  }
+
+
+  public function getFacturasArticulo($id)
+  {
+    try {
+      $invoice = ProductosFacturaContabilidad::with('factura.productos')->with('factura.cliente')->with('factura.almacen')->with('factura.encargado')->where('id_producto', $id)->orderBy('created_at', 'desc')->get();
+
+      return response()->json([
+        'is_error' => false,
+        'message' => 'Los productos se muestran',
+        'data' => $invoice
+      ]);
     } catch (\Exception $e) {
       throw $e;
     }

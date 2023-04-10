@@ -172,13 +172,12 @@ class ArticulosController extends Controller
         }
     }
 
-    public function handleProductReturn(Request $request)
+    public function handleProductAmountContabilidad($data, $operacion)
     {
         try {
-
-            for ($i = 0; $i < count($request->productos); $i++) {
-                $articulo = Articulo::find($request->productos[$i]['id_producto']);
-                $articulo->cantidad = $articulo->cantidad + $request->productos[$i]['cantidad'];
+            for ($i = 0; $i < count($data); $i++) {
+                $articulo = Articulo::find($data[$i]['id_producto']);
+                $articulo->cantidad_contabilidad = $operacion === 'resta' ? ($articulo->cantidad_contabilidad - $data[$i]['cantidad']) : ($articulo->cantidad_contabilidad + $data[$i]['cantidad']);
                 $articulo->save();
             }
         } catch (\Exception $e) {

@@ -24,7 +24,7 @@ class ProductosFacturaContabilidad extends Model
     ];
 
     public function factura() {
-        return $this->belongsTo(Factura::class, 'id_factura', 'id');
+        return $this->belongsTo(FacturaContabilidad::class, 'id_factura', 'id');
     }
 
     public function producto() {
