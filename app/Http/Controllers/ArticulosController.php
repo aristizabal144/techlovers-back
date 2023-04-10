@@ -46,6 +46,7 @@ class ArticulosController extends Controller
             $products->porcentaje_venta = $request->salePercentage;
             $products->valor_venta = $request->saleValue;
             $products->cantidad = $request->amount;
+            $products->cantidad_contabilidad = $request->amount_count;
             $products->estado = $request->state  == true ? 1 : 0;
             $products->descripcion = $request->description;
             $products->urlImagen = $request->urlImagen;
@@ -95,6 +96,7 @@ class ArticulosController extends Controller
             $products->porcentaje_venta = $request->porcentaje_venta;
             $products->valor_venta = $request->valor_venta;
             $products->cantidad = $request->cantidad;
+            $products->cantidad_contabilidad = $request->cantidad_contabilidad;
             $products->estado = $request->estado == true ? 1 : 0;
             $products->descripcion = $request->descripcion;
             $products->urlImagen = $request->urlImagen;
