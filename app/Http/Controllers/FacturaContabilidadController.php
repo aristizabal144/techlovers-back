@@ -90,164 +90,35 @@ class FacturaContabilidadController extends Controller
     }
   }
 
-  public function show($id)
-  {
-    try {
-      $factura = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->find($id);
-
-      return response()->json([
-        'is_error' => false,
-        'message' => 'La factura seleccionada, se ha encontrado',
-        'data' => $factura
-      ]);
-    } catch (\Exception $e) {
-      return response()->json([
-        'is_error' => true,
-        'message' => 'La factura seleccionada NO, se ha encontrado'
-      ]);
-    }
-  }
-
-  public function pagarTotalidadFactura(Request $request)
-  {
-
-    try {
-
-      DB::beginTransaction();
-
-      $factura = Factura::findOrFail($request->id_factura);
-
-      $factura->total_descuento = $factura->total - ($request->valor_descuento + $request->valor_flete + $request->valor_averias);
-      $factura->valor_descuento = $request->valor_descuento;
-      $factura->valor_flete = $request->valor_flete;
-      $factura->valor_averias = $request->valor_averias;
-      $factura->faltante_pago = 0;
-      $factura->estado = 'pagado';
-      $factura->fecha_pago = Carbon::now();
-
-
-      $factura->save();
-
-      $carbon = new \Carbon\Carbon();
-
-      $abono = new Abonos();
-
-      $abonosYaRealizados = Abonos::where('id_factura', $request->id_factura)->sum('valor');
-
-      $abono->id_factura = $request->id_factura;
-      $abono->estado = 'efectivo';
-      $abono->fecha = $carbon->now();
-      $abono->valor = $factura->total_descuento - $abonosYaRealizados;
-      $abono->descripcion = 'Ultimo pago';
-
-      $abono->save();
-
-      DB::commit();
-    } catch (\Exception $e) {
-      DB::rollback();
-      return response()->json([
-        'is_error' => true,
-        'message' => 'El pago no se pudo realizar con exito'
-      ]);
-    }
-  }
-
-  public function destroy($id)
-  {
-    try {
-      DB::beginTransaction();
-
-      $product_factura = ProductosFactura::where('id_factura', $id);
-      $products_get = $product_factura->get();
-      $articulo = new ArticulosController;
-      $articulo->handleProductAmount($products_get, 'factura');
-      $product_factura->delete();
-
-      Factura::where('id', $id)->delete();
-
-      DB::commit();
-      return response()->json([
-        'is_error' => false,
-        'message' => 'La factura se ha eliminado correctamente',
-      ]);
-    } catch (\Exception $e) {
-      DB::rollback();
-      return response()->json([
-        'is_error' => true,
-        'error' => $e,
-        'message' => 'Hubo un error al momento de eliminar la factura'
-      ]);
-    }
-  }
-
-
-  public function searchByParams(Request $request)
-  {
-    try {
-      $referencia = $request->input('input');
-      $facturas = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->where('referencia', 'like', "%$referencia%")
-        ->orderBy('created_at', 'desc')
-        ->paginate($request->input('size'));
-
-      return response()->json($facturas);
-    } catch (\Exception $e) {
-      throw $e;
-    }
-  }
-
-
-  //----------------------------------------------------------------
-  //|                   DASHBOARD FUNCTIONS                        |
-  //----------------------------------------------------------------
-
-  public function searchBulletInformation(Request $request)
-  {
-    try {
-      $desde = $request->input('from');
-      $hasta = $request->input('to');
-
-
-      $facturasPagadas = Factura::where('estado', 'pagado')->whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->sum('total_descuento');
-      $cartera = Factura::where('estado', 'pendiente_pago')->sum('total_descuento');
-
-
-      return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera]);
-    } catch (\Exception $e) {
-      throw $e;
-    }
-  }
-
-  public function searchInvoicePayments(Request $request)
-  {
-    try {
-      $desde = $request->input('from');
-      $hasta = $request->input('to');
-
-      $facturasPagadas = Factura::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->get();
-
-      return response()->json(['facturas_pagadas' => $facturasPagadas]);
-    } catch (\Exception $e) {
-      throw $e;
-    }
-  }
 
   public function storageSave(Request $request)
   {
 
-    return response()->json(['base64PDF' => base64_encode(\Storage::get('cris.pdf'))]);
-
     try {
-      //obtenemos el campo file definido en el formulario
+
+      DB::beginTransaction();
+
       $file = $request->file('file');
 
-      //obtenemos el nombre del archivo
-      $nombre = $file->getClientOriginalName();
+      $id = $request->input('id');
+
+      $reference = $request->input('reference');
 
       //indicamos que queremos guardar un nuevo archivo en el disco local
-      \Storage::disk('local')->putFileAs('.',  $file, $nombre);
+      \Storage::disk('local')->putFileAs('/PDF_FACTURACION',  $file, $reference.'.pdf');
 
-      return response()->json("archivo guardado");
+      $invoice = FacturaContabilidad::findOrFail($id);
+      $invoice->estado = 'facturado';
+      $invoice->save();
+
+      DB::commit();
+      
+      return response()->json([
+        'is_error' => false,
+        'message' => 'El documento se almaceno de manera exitosa'
+      ]);
     } catch (\Exception $e) {
+      DB::rollback();
       throw $e;
     }
   }

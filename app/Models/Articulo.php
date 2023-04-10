@@ -20,6 +20,7 @@ class Articulo extends Model
         'porcentaje_venta',
         'valor_venta',
         'cantidad',
+        'cantidad_contabilidad',
         'estado',
         'descripcion',
         'urlImagen'
