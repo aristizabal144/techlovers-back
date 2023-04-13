@@ -99,7 +99,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     // CONTABLE
     $router->get('/factura-contable', 'FacturaContabilidadController@index');
+    $router->get('/factura-contable-byId/{id}', 'FacturaContabilidadController@show');
     $router->get('/factura-contable/{id}', 'FacturaContabilidadController@getFacturasArticulo');
+    $router->put('/factura-contable/{id}', 'FacturaContabilidadController@update');
     $router->post('/factura-contable', 'FacturaContabilidadController@create');
     $router->delete('/factura-contable/{id}', 'FacturaContabilidadController@destroy');
 

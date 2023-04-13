@@ -91,6 +91,74 @@ class FacturaContabilidadController extends Controller
     }
   }
 
+  public function show(Request $request, $id) {
+    try {
+          $invoice = FacturaContabilidad::with('productos.producto')->with('cliente')->with('almacen')->with('encargado')->find($id);
+
+          return response()->json([
+              'is_error' => false,
+              'message' => 'La factura electronica seleccionada se ha encontrado',
+              'data' => $invoice
+          ]);
+      } catch (\Exception $e) {
+          return response()->json([
+              'is_error' => true,
+              'message' => 'La factura electronica seleccionda NO se ha encontrado'
+          ]);
+      }
+  }
+
+  public function update(Request $request, $id)
+  {
+      try {
+
+          DB::beginTransaction();
+
+          $invoice = FacturaContabilidad::findOrFail($id);
+
+          $invoice->referencia = $request->referencia;
+          $invoice->fecha = $request->fecha;
+          $invoice->id_cliente = $request->cliente['id'];
+          $invoice->id_almacen = $request->almacen['id'];
+          $invoice->total = $request->total;
+          $invoice->descripcion = $request->descripcion;
+
+          $invoice->save();
+
+          ProductosFacturaContabilidad::where('id_factura', $request->id)->delete();
+
+          for ($i = 0; $i < count($request->productos); $i++) {
+
+              $product = new ProductosFacturaContabilidad;
+              $product->id_factura = $invoice->id;
+              $product->id_producto = $request->productos[$i]['id'];
+              $product->referencia = $request->productos[$i]['referencia'];
+              $product->nombre = $request->productos[$i]['nombre'];
+              $product->cantidad = $request->productos[$i]['cantidad'];
+              $product->valor_unidad = $request->productos[$i]['valor_unidad'];
+              $product->valor_total = $request->productos[$i]['valor_total'];
+              $product->valor_total_unidad = $request->productos[$i]['valor_total_unidad'];
+              $product->valor_iva = $request->productos[$i]['valor_iva'];
+
+              $product->save();
+          }
+
+          DB::commit();
+
+          return response()->json([
+            'is_error' => false,
+            'message' => 'La factura electronica se a actualizado bien',
+            'data' => $invoice
+        ]);
+      } catch (\Exception $e) {
+          return $e;
+          DB::rollback();
+          return response()->json([
+              'is_error' => true,
+              'message' => 'Hubo un error al momento de actualizar la factura electronica'
+          ]);
+      }
+  }
 
   public function destroy($id)
     {
