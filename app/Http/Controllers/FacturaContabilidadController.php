@@ -39,6 +39,8 @@ class FacturaContabilidadController extends Controller
 
       DB::beginTransaction();
 
+      $valorProcentaje = $request->descuentoInput  == 0 ? 1 : (1 - ($request->descuentoInput/100)); 
+
       // Se crea la nueva factura en estado: "pendiente_pago"
       $invoice = new FacturaContabilidad;
       $invoice->id_usuario = $request->encargado['id'];
@@ -48,9 +50,9 @@ class FacturaContabilidadController extends Controller
       $invoice->id_almacen = $request->almacen['id'];
       $invoice->descripcion = $request->descripcion;  // Para una factura deberá ser otra descripcion ?
       $invoice->estado = 'pendiente_facturar';
-      $invoice->total = $request->total - ($request->total * 0.60);
-      $invoice->faltante_pago = $request->total - ($request->total * 0.60);
-      $invoice->total_descuento = $request->total - ($request->total * 0.60);
+      $invoice->total = $request->total - ($request->total * $valorProcentaje);
+      $invoice->faltante_pago = $request->total - ($request->total * $valorProcentaje);
+      $invoice->total_descuento = $request->total - ($request->total * $valorProcentaje);
       $invoice->valor_descuento = 0;
       $invoice->valor_flete = 0;
       $invoice->valor_averias = 0;
@@ -66,10 +68,10 @@ class FacturaContabilidadController extends Controller
         $product->referencia = $request->productos[$i]['referencia'];
         $product->nombre = $request->productos[$i]['nombre'];
         $product->cantidad = $request->productos[$i]['cantidad'];
-        $product->valor_total_unidad = $request->productos[$i]['valor_unidad'] - ($request->productos[$i]['valor_unidad'] * 0.60);
+        $product->valor_total_unidad = $request->productos[$i]['valor_unidad'] - ($request->productos[$i]['valor_unidad'] * $valorProcentaje);
         $product->valor_iva = $product->valor_total_unidad * 0.19;
         $product->valor_unidad = $product->valor_total_unidad - $product->valor_iva;
-        $product->valor_total = $request->productos[$i]['valor_total'] - ($request->productos[$i]['valor_total'] * 0.60);
+        $product->valor_total = $request->productos[$i]['valor_total'] - ($request->productos[$i]['valor_total'] * $valorProcentaje);
 
         $product->save();
       }
@@ -77,7 +79,7 @@ class FacturaContabilidadController extends Controller
       DB::commit();
 
       return response()->json([
-        'is_error' => false,
+        'is_error' => $invoice,
         'message' => 'La factura contable se creo de manera exitosa.'
       ]);
     } catch (\Exception $e) {
