@@ -133,7 +133,7 @@ class FacturaContabilidadController extends Controller
 
               $product = new ProductosFacturaContabilidad;
               $product->id_factura = $invoice->id;
-              $product->id_producto = $request->productos[$i]['id'];
+              $product->id_producto = $request->productos[$i]['producto']['id'];
               $product->referencia = $request->productos[$i]['referencia'];
               $product->nombre = $request->productos[$i]['nombre'];
               $product->cantidad = $request->productos[$i]['cantidad'];
