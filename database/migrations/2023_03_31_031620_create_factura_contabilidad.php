@@ -18,6 +18,8 @@ class CreateFacturaContabilidad extends Migration
             $table->enum('estado',array('pendiente_facturar','facturado'));
             $table->integer('total');
             $table->integer('total_descuento');
+            $table->integer('iva');
+            $table->integer('total_iva');
             $table->integer('faltante_pago');
             $table->integer('valor_descuento');
             $table->integer('valor_flete');

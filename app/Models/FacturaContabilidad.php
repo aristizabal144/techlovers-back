@@ -21,6 +21,8 @@ class FacturaContabilidad extends Model
         'estado',
         'total',
         'total_descuento',
+        'iva',
+        'total_iva',
         'faltante_pago',
         'valor_descuento',
         'valor_flete',

@@ -52,6 +52,8 @@ class FacturaContabilidadController extends Controller
       $invoice->estado = 'pendiente_facturar';
       $invoice->total = $request->total - ($request->total * $valorProcentaje);
       $invoice->faltante_pago = $request->total - ($request->total * $valorProcentaje);
+      $invoice->iva = $invoice->total * 0.19;
+      $invoice->total_iva = $invoice->total + $invoice->iva;
       $invoice->total_descuento = $request->total - ($request->total * $valorProcentaje);
       $invoice->valor_descuento = 0;
       $invoice->valor_flete = 0;
@@ -79,7 +81,7 @@ class FacturaContabilidadController extends Controller
       DB::commit();
 
       return response()->json([
-        'is_error' => $invoice,
+        'is_error' => false,
         'message' => 'La factura contable se creo de manera exitosa.'
       ]);
     } catch (\Exception $e) {
@@ -123,6 +125,8 @@ class FacturaContabilidadController extends Controller
           $invoice->id_cliente = $request->cliente['id'];
           $invoice->id_almacen = $request->almacen['id'];
           $invoice->total = $request->total;
+          $invoice->iva = $invoice->total * 0.19;
+          $invoice->total_iva = $invoice->total + $invoice->iva;
           $invoice->descripcion = $request->descripcion;
 
           $invoice->save();
