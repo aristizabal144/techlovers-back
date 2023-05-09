@@ -39,7 +39,7 @@ class FacturaContabilidadController extends Controller
 
       DB::beginTransaction();
 
-      $valorProcentaje = $request->descuentoInput  == 0 ? 1 : (1 - ($request->descuentoInput/100)); 
+      $valorProcentaje = $request->descuentoInput/100; 
 
       // Se crea la nueva factura en estado: "pendiente_pago"
       $invoice = new FacturaContabilidad;
@@ -50,8 +50,8 @@ class FacturaContabilidadController extends Controller
       $invoice->id_almacen = $request->almacen['id'];
       $invoice->descripcion = $request->descripcion;  // Para una factura deberá ser otra descripcion ?
       $invoice->estado = 'pendiente_facturar';
-      $invoice->total = $request->total - ($request->total * $valorProcentaje);
-      $invoice->faltante_pago = $request->total - ($request->total * $valorProcentaje);
+      $invoice->total = ($request->total * $valorProcentaje) / 1.19;
+      $invoice->faltante_pago = ($request->total * $valorProcentaje) / 1.19;
       $invoice->iva = $invoice->total * 0.19;
       $invoice->total_iva = $invoice->total + $invoice->iva;
       $invoice->total_descuento = $request->total - ($request->total * $valorProcentaje);
@@ -70,10 +70,10 @@ class FacturaContabilidadController extends Controller
         $product->referencia = $request->productos[$i]['referencia'];
         $product->nombre = $request->productos[$i]['nombre'];
         $product->cantidad = $request->productos[$i]['cantidad'];
-        $product->valor_total_unidad = $request->productos[$i]['valor_unidad'] - ($request->productos[$i]['valor_unidad'] * $valorProcentaje);
-        $product->valor_iva = $product->valor_total_unidad * 0.19;
-        $product->valor_unidad = $product->valor_total_unidad - $product->valor_iva;
-        $product->valor_total = $request->productos[$i]['valor_total'] - ($request->productos[$i]['valor_total'] * $valorProcentaje);
+        $product->valor_unidad = ($request->productos[$i]['valor_unidad'] * $valorProcentaje) / 1.19;
+        $product->valor_iva = $product->valor_unidad * 0.19;
+        $product->valor_total_unidad = $product->valor_unidad + $product->valor_iva;
+        $product->valor_total = $product->cantidad * $product->valor_unidad;
 
         $product->save();
       }
