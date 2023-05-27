@@ -123,7 +123,7 @@ class FacturaController extends Controller
             $abonosYaRealizados = Abonos::where('id_factura', $request->id_factura)->sum('valor');
 
             $abono->id_factura = $request->id_factura;
-            $abono->estado = 'efectivo';
+            $abono->estado = $request->estado;
             $abono->fecha = $carbon->now();
             $abono->valor = $factura->total_descuento - $abonosYaRealizados;
             $abono->descripcion = 'Ultimo pago';
