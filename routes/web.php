@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\ArticulosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\AlmacenesController;
+use App\Http\Controllers\GastosController;
 
 
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
@@ -67,8 +68,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/quote', 'CotizacionController@create');
     $router->put('/quote', 'CotizacionController@check');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
-    
-
 
     // FACTURAS
     $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
@@ -105,6 +104,13 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/factura-contable', 'FacturaContabilidadController@create');
     $router->delete('/factura-contable/{id}', 'FacturaContabilidadController@destroy');
 
+
+    // GASTOS
+    $router->get('/gastos/{id}', 'GastosController@show');
+    $router->get('/gastos', 'GastosController@index');
+    $router->put('/gastos/{id}', 'GastosController@update');
+    $router->post('/gastos', 'GastosController@create');
+    $router->delete('/gastos', 'GastosController@delete');
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');
