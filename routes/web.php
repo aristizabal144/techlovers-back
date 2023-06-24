@@ -108,9 +108,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // GASTOS
     $router->get('/gastos/{id}', 'GastosController@show');
     $router->get('/gastos', 'GastosController@index');
+    $router->get('/gastos-date', 'GastosController@searchByDate');
     $router->put('/gastos/{id}', 'GastosController@update');
     $router->post('/gastos', 'GastosController@create');
-    $router->delete('/gastos', 'GastosController@delete');
+    $router->delete('/gastos/{id}', 'GastosController@delete');
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');

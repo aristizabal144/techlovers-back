@@ -111,7 +111,7 @@ class FacturaController extends Controller
             $factura->valor_averias = $request->valor_averias;
             $factura->faltante_pago = 0;
             $factura->estado = 'pagado';
-            $factura->fecha_pago = Carbon::now();
+            $factura->fecha_pago = $request->fecha;
 
 
             $factura->save();
@@ -124,7 +124,7 @@ class FacturaController extends Controller
 
             $abono->id_factura = $request->id_factura;
             $abono->estado = $request->estado;
-            $abono->fecha = $carbon->now();
+            $abono->fecha = $request->fecha;
             $abono->valor = $factura->total_descuento - $abonosYaRealizados;
             $abono->descripcion = 'Ultimo pago';
 
@@ -211,9 +211,10 @@ class FacturaController extends Controller
             $desde = $request->input('from');
             $hasta = $request->input('to');
 
-            $facturasPagadas = Factura::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->get();
+            $abonosEfectivo = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','efectivo')->get();
+            $abonosTransferencia = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','transferencia')->get();
 
-            return response()->json(['facturas_pagadas' => $facturasPagadas]);
+            return response()->json(['efectivo' => $abonosEfectivo, 'transferencia' => $abonosTransferencia]);
         } catch (\Exception $e) {
             throw $e;
         }

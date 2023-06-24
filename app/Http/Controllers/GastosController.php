@@ -113,4 +113,29 @@ class GastosController extends Controller {
       ]);
     }
   }
+
+  public function searchByDate(Request $request)
+    {
+        try {
+            $desde = $request->input('from');
+            $hasta = $request->input('to');
+
+            if ($request->input('size') != null) {
+              $gastos = Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            } else {
+              $gastos = Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->get();
+            }
+
+            return response()->json([
+              'is_error' => false,
+              'message' => 'Se obtienen los gastos de manera exitosa',
+              'data' => $gastos
+            ]);
+        } catch (\Exception $e) {
+          return response()->json([
+            'is_error' => $e,
+            'message' => 'Hubo un error obteniendo los gasto'
+          ]);
+        }
+    }
 }
