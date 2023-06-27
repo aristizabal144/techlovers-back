@@ -183,6 +183,30 @@ class FacturaController extends Controller
         }
     }
 
+    public function searchByDate(Request $request)
+    {
+        try {
+            $desde = $request->input('from');
+            $hasta = $request->input('to');
+
+
+            $facturas = Factura::with('cliente')->with('almacen')->with('encargado')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->get();
+
+
+            return response()->json([
+              'is_error' => false,
+              'message' => 'Se obtienen las facturas de manera exitosa',
+              'data' => $facturas,
+              'total_facturas' => Factura::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('total')
+            ]);
+        } catch (\Exception $e) {
+          return response()->json([
+            'is_error' => $e,
+            'message' => 'Hubo un error obteniendo las facturas'
+          ]);
+        }
+    }
+
 
     //----------------------------------------------------------------
     //|                   DASHBOARD FUNCTIONS                        |
@@ -196,7 +220,7 @@ class FacturaController extends Controller
 
 
             $facturasPagadas = Factura::where('estado', 'pagado')->whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->sum('total_descuento');
-            $cartera = Factura::where('estado', 'pendiente_pago')->sum('total_descuento');
+            $cartera = Factura::where('estado', 'pendiente_pago')->sum('faltante_pago');
 
 
             return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera]);
@@ -212,9 +236,11 @@ class FacturaController extends Controller
             $hasta = $request->input('to');
 
             $abonosEfectivo = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','efectivo')->get();
+            $abonosEfectivoTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','efectivo')->sum('valor');
             $abonosTransferencia = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','transferencia')->get();
+            $abonosTransferenciaTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','transferencia')->sum('valor');
 
-            return response()->json(['efectivo' => $abonosEfectivo, 'transferencia' => $abonosTransferencia]);
+            return response()->json(['efectivo' => $abonosEfectivo, 'efectivoTotal' => $abonosEfectivoTotal, 'transferencia' => $abonosTransferencia, 'transferenciaTotal' => $abonosTransferenciaTotal]);
         } catch (\Exception $e) {
             throw $e;
         }

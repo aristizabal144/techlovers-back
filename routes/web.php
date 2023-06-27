@@ -70,6 +70,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
 
     // FACTURAS
+    $router->get('/invoice/invoice-date', 'FacturaController@searchByDate');
     $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
     $router->get('/invoice', 'FacturaController@index');
     $router->get('/invoice/{id}', 'FacturaController@show');

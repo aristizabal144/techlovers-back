@@ -129,7 +129,8 @@ class GastosController extends Controller {
             return response()->json([
               'is_error' => false,
               'message' => 'Se obtienen los gastos de manera exitosa',
-              'data' => $gastos
+              'data' => $gastos,
+              'total_gastos' => Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('valor')
             ]);
         } catch (\Exception $e) {
           return response()->json([
