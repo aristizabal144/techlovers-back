@@ -25,6 +25,7 @@ class Factura extends Model
         'valor_descuento',
         'valor_flete',
         'valor_averias',
+        'valor_retencion',
         'fecha_pago'
     ];
 

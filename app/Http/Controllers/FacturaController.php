@@ -105,10 +105,11 @@ class FacturaController extends Controller
 
             $factura = Factura::findOrFail($request->id_factura);
 
-            $factura->total_descuento = $factura->total - ($request->valor_descuento + $request->valor_flete + $request->valor_averias);
+            $factura->total_descuento = $factura->total - ($request->valor_descuento + $request->valor_flete + $request->valor_averias + $request->valor_retencion);
             $factura->valor_descuento = $request->valor_descuento;
             $factura->valor_flete = $request->valor_flete;
             $factura->valor_averias = $request->valor_averias;
+            $factura->valor_retencion = $request->valor_retencion;
             $factura->faltante_pago = 0;
             $factura->estado = 'pagado';
             $factura->fecha_pago = $request->fecha;
