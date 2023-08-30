@@ -8,6 +8,7 @@ use App\Models\ProductosFactura;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Response;
 
 class FacturaController extends Controller
 {
@@ -246,4 +247,46 @@ class FacturaController extends Controller
             throw $e;
         }
     }
+
+    public function downloadFacturaXLSX(Request $request){
+        try {
+
+            $productos = $request->input('productos');
+
+            $data = [
+                ['REF', 'DESCRIPCION', 'CNTIDAD', 'V UNIDAD', 'TOTAL V. + IVA', '%', 'VALOR % TOTAL', 'VALOR + IVA UNID', 'SUBTOTAL']
+            ];
+
+            foreach ($productos as $producto) {
+                $porcentaje = 0.4;
+                $porcentajeValor = $producto['valor_total']*$porcentaje;
+                $value = [$producto['referencia'], $producto['nombre'], $producto['cantidad'], $producto['valor_unidad'], $producto['valor_total'], $porcentaje, $porcentajeValor, $porcentajeValor/$producto['cantidad'], ($porcentajeValor/$producto['cantidad'])/1.19];
+                array_push($data, $value);
+            }
+            
+    
+            $csvFileName = 'archivo_csv.csv';
+            $csvContent = implode("\n", array_map(function ($row) {
+                return implode(',', $row);
+            }, $data));
+    
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+            ];
+    
+            return response($csvContent, 200, $headers);
+
+            
+        } catch (\Exception $e) {
+            return $e;
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Error al generar el archivo XLSX',
+                'error' => $e,
+            ]);
+        }
+    }
+
+
 }

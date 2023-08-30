@@ -78,6 +78,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/invoice/pay', 'FacturaController@pagarTotalidadFactura');
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');
+    $router->post('/invoice/xlsx', 'FacturaController@downloadFacturaXLSX');
     
 
      // DEVOLUCIONES
