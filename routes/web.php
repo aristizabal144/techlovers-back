@@ -115,6 +115,12 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/gastos', 'GastosController@create');
     $router->delete('/gastos/{id}', 'GastosController@delete');
 
+    //VALES
+    $router->get('/vales', 'ValesController@index');
+    $router->get('/vales-date', 'ValesController@searchByDate');
+    $router->post('/vales', 'ValesController@create');
+    $router->delete('/vales/{id}', 'ValesController@delete');
+
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');
     $router->post('/storage', 'FacturaContabilidadController@storageSave');
