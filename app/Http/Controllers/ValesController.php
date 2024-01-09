@@ -16,7 +16,7 @@ class ValesController extends Controller {
       $vales->fecha = $request->fecha;
       $vales->valor = $request->valor;
       $vales->id_usuario = $request->id_usuario;
-      $vales->estado = $request->descripcion;
+      $vales->estado = 'pendiente';
 
       $vales->save();
 
@@ -37,7 +37,7 @@ class ValesController extends Controller {
   {
     try {
       if ($request->input('size') != null) {
-        $vales = Vale::orderBy('created_at', 'desc')->paginate($request->input('size'));
+        $vales = Vale::with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
       } else {
         $vales = Vale::all();
       }
@@ -73,16 +73,43 @@ class ValesController extends Controller {
     }
   }
 
-  public function searchByDate(Request $request)
+  public function changeStatus(Request $request)
+  {
+    try {
+      $id = $request->input('id');
+      $date = $request->input('date');
+
+      $vale = Vale::findOrFail($id);
+
+      $vale->fecha_pago = $date;
+      $vale->estado = 'pagado';
+
+      $vale->save();
+
+      return response()->json([
+        'is_error' => false,
+        'message' => 'El vale fue pagado correctamente',
+        'data' => $vale
+      ]);
+    } catch (\Exception $e) {
+      return $e;
+      return response()->json([
+        'is_error' => true,
+        'message' => 'El vale no se pudo pagar de manera correcta'
+      ]);
+    }
+  }
+
+
+  public function searchByUser(Request $request)
     {
         try {
-            $desde = $request->input('from');
-            $hasta = $request->input('to');
+            $id = $request->input('id');
 
             if ($request->input('size') != null) {
-              $vales = Vale::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->paginate($request->input('size'));
+              $vales = Vale::with('encargado')->where('id_usuario', $id)->orderBy('created_at', 'desc')->paginate($request->input('size'));
             } else {
-              $vales = Vale::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->get();
+              $vales = Vale::with('encargado')->where('id_usuario', $id)->orderBy('created_at', 'desc')->get();
             }
 
             return response()->json([

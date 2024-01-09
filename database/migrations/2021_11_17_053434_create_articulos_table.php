@@ -24,6 +24,7 @@ class CreateArticulosTable extends Migration
             $table->text('descripcion');
             $table->string('urlImagen');
             $table->integer('ultimoMovimiento')->default(0);
+            $table->boolean('is_delete')->nullable()->default(false);;
             $table->timestamps();
         });
         Schema::table('articulos', function(Blueprint $table){

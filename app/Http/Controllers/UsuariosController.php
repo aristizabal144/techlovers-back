@@ -111,6 +111,25 @@ class UsuariosController extends Controller
         
     }
 
+    public function getAllUsers()
+    {
+        try {
+            // Obtener todos los usuarios
+            $users = User::select('id', 'name', 'email', 'created_at', 'updated_at')->get();
+
+            // Retornar la lista de usuarios en formato JSON
+            return response()->json([
+                'is_error' => false,
+                'data' => $users
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'los usuarios no se obtienen de manera correcta'
+            ]);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -119,7 +138,7 @@ class UsuariosController extends Controller
      */
     public function show(usuarios $usuarios)
     {
-        //
+        
     }
 
     /**

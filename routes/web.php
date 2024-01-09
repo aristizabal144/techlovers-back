@@ -17,6 +17,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('logout', ['as' => 'logout', 'uses' => 'UsuariosController@logout']);
     $router->get('auth', ['as' => 'auth', 'uses' => 'UsuariosController@showAuth']);
 
+    //USERS
+    $router->get('user', 'UsuariosController@getAllUsers');
+
     //CATEGORIES
     $router->get('/categorie/categorie-search', 'CategoriasController@searchByParams');
     $router->get('/categorie', 'CategoriasController@index');
@@ -120,6 +123,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/vales-date', 'ValesController@searchByDate');
     $router->post('/vales', 'ValesController@create');
     $router->delete('/vales/{id}', 'ValesController@delete');
+    $router->post('/vales/change-status', 'ValesController@changeStatus');
+    $router->get('/vales/user-search', 'ValesController@searchByUser');
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');

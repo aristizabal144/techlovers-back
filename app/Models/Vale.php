@@ -13,13 +13,14 @@ class Vale extends Model {
   protected $fillable = [
     'id',
     'fecha',
+    'fecha_pago',
     'valor',
     'id_usuario',
     'estado'
   ];
 
-public function encargado() {
-    return $this->belongsTo(User::class, 'id_usuario', 'id');
-}
+  public function encargado() {
+      return $this->belongsTo(User::class, 'id_usuario', 'id');
+  }
   
 }

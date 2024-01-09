@@ -11,6 +11,7 @@ class Vales extends Migration
         Schema::create('vales', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('fecha');
+            $table->date('fecha_pago')->nullable();
             $table->integer('valor');
             $table->unsignedBigInteger('id_usuario');
             $table->enum('estado', array('pagado', 'pendiente'));

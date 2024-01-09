@@ -18,7 +18,7 @@ class ArticulosController extends Controller
             if ($request->input('state') != 2) {
                 $products = $products->where('estado', (int)$request->input('state'));
             }
-            $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $products = $products->where('is_delete', false)->orderBy('created_at', 'desc')->paginate($request->input('size'));
 
             return response()->json([
                 'is_error' => false,
@@ -119,7 +119,12 @@ class ArticulosController extends Controller
     public function destroy($id)
     {
         try {
-            DB::table('articulos')->delete($id);
+
+            $products = Articulo::find($id);
+
+            $products->is_delete = true; 
+
+            $products->save();
 
             return response()->json([
                 'is_error' => false,
@@ -152,7 +157,7 @@ class ArticulosController extends Controller
 
 
 
-            $products = $products->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $products = $products->where('is_delete', false)->orderBy('created_at', 'desc')->paginate($request->input('size'));
 
             return response()->json($products);
         } catch (\Exception $e) {

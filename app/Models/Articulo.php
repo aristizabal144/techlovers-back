@@ -23,6 +23,7 @@ class Articulo extends Model
         'cantidad_contabilidad',
         'estado',
         'descripcion',
-        'urlImagen'
+        'urlImagen',
+        'is_delete'
     ];
 }
