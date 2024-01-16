@@ -31,6 +31,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //PRODUCTS - ARTICULOS
 
+    $router->get('/product/get-inventory', 'ArticulosController@getInventaryTotal');
     $router->get('/product/product-search', 'ArticulosController@searchByParams');
     $router->get('/product', 'ArticulosController@index');
     $router->get('/product/{id}', 'ArticulosController@show');
@@ -121,10 +122,12 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     //VALES
     $router->get('/vales', 'ValesController@index');
     $router->get('/vales-date', 'ValesController@searchByDate');
+    $router->get('/vales/user-search', 'ValesController@searchByUser');
+    $router->get('/vales/by-date', 'ValesController@searchByDate');
     $router->post('/vales', 'ValesController@create');
     $router->delete('/vales/{id}', 'ValesController@delete');
     $router->post('/vales/change-status', 'ValesController@changeStatus');
-    $router->get('/vales/user-search', 'ValesController@searchByUser');
+    
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');

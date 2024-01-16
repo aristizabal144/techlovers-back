@@ -191,4 +191,33 @@ class ArticulosController extends Controller
             throw $e;
         }
     }
+
+    public function getInventaryTotal(Request $request)
+    {
+        try {
+
+            $valor_entrada = 0;
+            $valor_salida = 0;
+
+            $products = Articulo::where('is_delete', false)->get();
+
+            for ($i = 0; $i < count($products); $i++) {
+                $valor_entrada += $products[$i]->cantidad * $products[$i]->valor_entra;
+                $valor_salida += $products[$i]->cantidad * $products[$i]->valor_venta;
+            }
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los datos se muestran',
+                'valor_entrada' => $valor_entrada,
+                'valor_salida' => $valor_salida,
+                'total_inventario' => $valor_salida - $valor_entrada 
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los productos no se muestran'
+            ]);
+        }
+    }
 }

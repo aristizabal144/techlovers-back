@@ -119,20 +119,28 @@ class GastosController extends Controller {
         try {
             $desde = $request->input('from');
             $hasta = $request->input('to');
+            $tipo_pago = $request->input('type_pay');
 
             if ($request->input('size') != null) {
               $gastos = Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->paginate($request->input('size'));
             } else {
-              $gastos = Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->get();
+
+              $gastos = Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta);
+
+              if($tipo_pago != null){
+                $gastos = $gastos->where('metodo_pago', $tipo_pago);
+              }
+              $gastos = $gastos->orderBy('created_at', 'desc')->get();
             }
 
             return response()->json([
               'is_error' => false,
               'message' => 'Se obtienen los gastos de manera exitosa',
               'data' => $gastos,
-              'total_gastos' => Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('valor')
+              'total_gastos' => Gastos::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('metodo_pago', $tipo_pago)->orderBy('created_at', 'desc')->sum('valor')
             ]);
         } catch (\Exception $e) {
+          return $e;
           return response()->json([
             'is_error' => $e,
             'message' => 'Hubo un error obteniendo los gasto'

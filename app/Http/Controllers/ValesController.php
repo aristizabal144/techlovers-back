@@ -77,7 +77,7 @@ class ValesController extends Controller {
   {
     try {
       $id = $request->input('id');
-      $date = $request->input('date');
+      $date = $request->input('fecha');
 
       $vale = Vale::findOrFail($id);
 
@@ -121,6 +121,35 @@ class ValesController extends Controller {
           return response()->json([
             'is_error' => $e,
             'message' => 'Hubo un error obteniendo los vales'
+          ]);
+        }
+    }
+
+    public function searchByDate(Request $request)
+    {
+        try {
+            $desde = $request->input('from');
+            $hasta = $request->input('to');
+
+            if ($request->input('size') != null) {
+              $vale = Vale::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            } else {
+
+              $vale = Vale::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->get();
+            }
+
+            return response()->json([
+              'is_error' => false,
+              'message' => 'Se obtienen los vales de manera exitosa',
+              'vales_generados' => $vale,
+              'vales_pagados' => Vale::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->orderBy('created_at', 'desc')->get(),
+              'total' => Vale::whereDate('fecha_pago', '>=', $desde)->whereDate('fecha_pago', '<=', $hasta)->where('estado', 'pagado')->orderBy('created_at', 'desc')->sum('valor') - Vale::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('valor')
+            ]);
+        } catch (\Exception $e) {
+          return $e;
+          return response()->json([
+            'is_error' => $e,
+            'message' => 'Hubo un error obteniendo los gasto'
           ]);
         }
     }
