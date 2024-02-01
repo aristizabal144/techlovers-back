@@ -49,7 +49,7 @@ class ArticulosController extends Controller
             $products->cantidad_contabilidad = $request->amount_count;
             $products->estado = $request->state  == true ? 1 : 0;
             $products->descripcion = $request->description;
-            $products->urlImagen = $request->urlImagen;
+            $products->urlImagen = $request->imageAws;
 
             $products->save();
 
@@ -99,7 +99,7 @@ class ArticulosController extends Controller
             $products->cantidad_contabilidad = $request->cantidad_contabilidad;
             $products->estado = $request->estado == true ? 1 : 0;
             $products->descripcion = $request->descripcion;
-            $products->urlImagen = $request->urlImagen;
+            $products->urlImagen = $request->imageAws;
 
             $products->save();
 
