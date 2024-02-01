@@ -9,6 +9,24 @@ use Illuminate\Support\Facades\DB;
 class ArticulosController extends Controller
 {
 
+    public function getCatalog(Request $request)
+    {
+        try {
+
+            $products = new Articulo();
+
+            $products = $products->where('is_delete', false)->orderBy('created_at', 'desc')->where('estado', 1)->get();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los productos se muestran',
+                'data' => $products
+            ]);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
     public function index(Request $request)
     {
         try {

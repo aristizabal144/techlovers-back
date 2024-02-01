@@ -31,6 +31,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //PRODUCTS - ARTICULOS
 
+    $router->get('/product/getCatalog', 'ArticulosController@getCatalog');
     $router->get('/product/get-inventory', 'ArticulosController@getInventaryTotal');
     $router->get('/product/product-search', 'ArticulosController@searchByParams');
     $router->get('/product', 'ArticulosController@index');
