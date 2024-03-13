@@ -217,7 +217,7 @@ class ArticulosController extends Controller
             $valor_entrada = 0;
             $valor_salida = 0;
 
-            $products = Articulo::where('is_delete', false)->get();
+            $products = Articulo::where('is_delete', false)->where('estado', 1)->get();
 
             for ($i = 0; $i < count($products); $i++) {
                 $valor_entrada += $products[$i]->cantidad * $products[$i]->valor_entra;
