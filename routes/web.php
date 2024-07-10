@@ -19,6 +19,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     //USERS
     $router->get('user', 'UsuariosController@getAllUsers');
+    $router->post('user/password', 'UsuariosController@updatePassword');
 
     //CATEGORIES
     $router->get('/categorie/categorie-search', 'CategoriasController@searchByParams');

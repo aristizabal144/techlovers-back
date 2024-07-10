@@ -130,6 +130,28 @@ class UsuariosController extends Controller
         }
     }
 
+    public function updatePassword(Request $request){
+
+        $idUser = $request->id;
+
+        try {
+            $user = User::find($idUser);
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Se ha actualizado la contrasena correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Error actualizadondo la contrasena'
+            ]);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
