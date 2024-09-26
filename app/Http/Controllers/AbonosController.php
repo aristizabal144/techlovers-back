@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 class AbonosController extends Controller
 {
 
-  public function index(Request $request) {
+  public function index(Request $request)
+  {
     try {
       $abonos = Abonos::where('id_factura', $request->input('id_factura'))->get();
       return response()->json([
@@ -52,7 +53,8 @@ class AbonosController extends Controller
       } else {
         $factura->faltante_pago = $factura->faltante_pago - $request->valor_abono;
 
-        if ($factura->faltante_pago === 0) {}
+        if ($factura->faltante_pago === 0) {
+        }
 
         $factura->save();
       }
@@ -94,16 +96,23 @@ class AbonosController extends Controller
     }
   }
 
-  public function delete($id)
+  public function delete(Request $request)
   {
     try {
-      DB::table('abonos')->delete($id);
+      DB::beginTransaction();
+      $factura = Factura::findOrFail($request->id_factura);
+      $factura->faltante_pago += $request->valor_abono;
+      $factura->save();
+
+      DB::table('abonos')->where('id', $request->id)->delete();
+      DB::commit();
 
       return response()->json([
         'is_error' => false,
-        'message' => 'El abono se ha eliminado correctamente',
+        'message' => 'El abono fue eliminado correctamente.',
       ]);
     } catch (\Exception $e) {
+      DB::rollBack();
       return response()->json([
         'is_error' => true,
         'message' => 'Hubo un error eliminando el abono'
