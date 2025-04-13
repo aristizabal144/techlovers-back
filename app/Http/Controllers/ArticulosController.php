@@ -66,6 +66,8 @@ class ArticulosController extends Controller
             $products->cantidad = $request->amount;
             $products->cantidad_contabilidad = $request->amount_count;
             $products->estado = $request->state  == true ? 1 : 0;
+            $products->manifiestsId = $request->manifiestsId;
+            $products->numberPageManifiests = $request->numberPageManifiests;
             $products->descripcion = $request->description;
             $products->urlImagen = $request->urlImagen;
 
@@ -116,6 +118,8 @@ class ArticulosController extends Controller
             $products->cantidad = $request->cantidad;
             $products->cantidad_contabilidad = $request->cantidad_contabilidad;
             $products->estado = $request->estado == true ? 1 : 0;
+            $products->manifiestsId = $request->manifiestsId;
+            $products->numberPageManifiests = $request->numberPageManifiests;
             $products->descripcion = $request->descripcion;
             $products->urlImagen = $request->imageAws;
 
@@ -140,7 +144,7 @@ class ArticulosController extends Controller
 
             $products = Articulo::find($id);
 
-            $products->is_delete = true; 
+            $products->is_delete = true;
 
             $products->save();
 
@@ -229,7 +233,7 @@ class ArticulosController extends Controller
                 'message' => 'Los datos se muestran',
                 'valor_entrada' => $valor_entrada,
                 'valor_salida' => $valor_salida,
-                'total_inventario' => $valor_salida - $valor_entrada 
+                'total_inventario' => $valor_salida - $valor_entrada
             ]);
         } catch (\Exception $e) {
             return response()->json([

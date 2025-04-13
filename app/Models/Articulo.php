@@ -18,6 +18,8 @@ class Articulo extends Model
         'nombre',
         'valor_entra',
         'porcentaje_venta',
+        'manifiestsId',
+        'numberPageManifiests',
         'valor_venta',
         'cantidad',
         'cantidad_contabilidad',
