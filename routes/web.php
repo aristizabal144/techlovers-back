@@ -97,7 +97,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     // ABONOS
     $router->get('/abonos', 'AbonosController@index');
     $router->post('/abonos', 'AbonosController@create');
-    $router->delete('/abonos/{id}', 'AbonosController@delete');
+    $router->post('/abonos/delete', 'AbonosController@delete');
     $router->put('/abonos/{id}', 'AbonosController@update');
 
     // DASHBOARD
