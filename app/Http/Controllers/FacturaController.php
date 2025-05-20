@@ -15,7 +15,7 @@ class FacturaController extends Controller
     public function index(Request $request)
     {
         try {
-            $factura = Factura::with('productos')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $factura = Factura::with('productos.producto.manifiesto')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las facturas se muestran',
@@ -146,15 +146,15 @@ class FacturaController extends Controller
     {
         try {
             DB::beginTransaction();
-    
+
             $product_factura = ProductosFactura::where('id_factura', $id);
             $products_get = $product_factura->get();
             $articulo = new ArticulosController;
             $articulo->handleProductAmount($products_get, 'factura');
             $product_factura->delete();
-    
+
             Factura::where('id', $id)->delete();
-    
+
             DB::commit();
             return response()->json([
                 'is_error' => false,
@@ -169,7 +169,7 @@ class FacturaController extends Controller
             ]);
         }
     }
-    
+
 
     public function searchByParams(Request $request)
     {
@@ -263,21 +263,21 @@ class FacturaController extends Controller
                 $value = [$producto['referencia'], $producto['nombre'], $producto['cantidad'], $producto['valor_unidad'], $producto['valor_total'], $porcentaje, $porcentajeValor, $porcentajeValor/$producto['cantidad'], ($porcentajeValor/$producto['cantidad'])/1.19];
                 array_push($data, $value);
             }
-            
-    
+
+
             $csvFileName = 'archivo_csv.csv';
             $csvContent = implode("\n", array_map(function ($row) {
                 return implode(',', $row);
             }, $data));
-    
+
             $headers = [
                 'Content-Type' => 'text/csv',
                 'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
             ];
-    
+
             return response($csvContent, 200, $headers);
 
-            
+
         } catch (\Exception $e) {
             return $e;
             return response()->json([

@@ -22,6 +22,7 @@ class CreateFacturasTable extends Migration
             $table->integer('valor_descuento');
             $table->integer('valor_flete');
             $table->integer('valor_averias');
+            $table->integer('valor_retencion');
             $table->timestamp('fecha_pago')->nullable();
             $table->timestamps();
         });
