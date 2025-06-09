@@ -242,4 +242,63 @@ class ArticulosController extends Controller
             ]);
         }
     }
+
+    public function getStatisticsOfCategoriesByProduct(Request $request)
+    {
+        try {
+            $statistics = DB::table('articulos')
+                ->join('categorias', 'articulos.id_categoria', '=', 'categorias.id')
+                ->select('categorias.nombre as categoria', DB::raw('count(*) as total'))
+                ->where('articulos.is_delete', false)
+                ->where('articulos.estado', 1)
+                ->groupBy('categorias.nombre')
+                ->get();
+            $total_products = Articulo::where('is_delete', false)->where('estado', 1)->count();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los datos se muestran',
+                'data' => [
+                    'total_products' => $total_products,
+                    'statistics_of_category_by_product' => $statistics
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los productos no se muestran'
+            ]);
+        }
+    }
+
+    public function getStatisticsOfCategoriesSellsByProduct(Request $request)
+    {
+        try {
+            $statistics = DB::table('productos_facturas')
+                ->join('articulos', 'productos_facturas.id_producto', '=', 'articulos.id')
+                ->join('categorias', 'articulos.id_categoria', '=', 'categorias.id')
+                ->select(
+                    'categorias.nombre as categoria',
+                    DB::raw('SUM(productos_facturas.valor_total) as total')
+                )
+                ->groupBy('categorias.nombre')
+                ->get();
+
+            $total_products = Articulo::count();
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Los datos se muestran',
+                'data' => [
+                    'total_products' => $total_products,
+                    'statistics_of_category_sells_by_product' => $statistics
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Los productos no se muestran'
+            ]);
+        }
+    }
 }

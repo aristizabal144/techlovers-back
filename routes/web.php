@@ -34,6 +34,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     $router->get('/product/getCatalog', 'ArticulosController@getCatalog');
     $router->get('/product/get-inventory', 'ArticulosController@getInventaryTotal');
+    $router->get('/product/get-statistics', 'ArticulosController@getStatisticsOfCategoriesByProduct');
+    $router->get('/product/get-statistics-sells', 'ArticulosController@getStatisticsOfCategoriesSellsByProduct');
     $router->get('/product/product-search', 'ArticulosController@searchByParams');
     $router->get('/product', 'ArticulosController@index');
     $router->get('/product/{id}', 'ArticulosController@show');
@@ -63,7 +65,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/store', 'AlmacenesController@create');
     $router->put('/store/{id}', 'AlmacenesController@update');
     $router->delete('/store/{id}', 'AlmacenesController@destroy');
-    
+
 
 
     // COTIZACIONES
@@ -85,7 +87,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');
     $router->post('/invoice/xlsx', 'FacturaController@downloadFacturaXLSX');
-    
+
 
      // DEVOLUCIONES
      $router->get('/return', 'DevolucionesController@index');
@@ -129,7 +131,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/vales', 'ValesController@create');
     $router->delete('/vales/{id}', 'ValesController@delete');
     $router->post('/vales/change-status', 'ValesController@changeStatus');
-    
+
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');
@@ -138,5 +140,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     //MANIFIESTOS
     $router->get('/manifests', 'ManifiestosController@index');
     $router->post('/manifests', 'ManifiestosController@create');
-    
+
 });
