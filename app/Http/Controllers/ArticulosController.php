@@ -249,6 +249,7 @@ class ArticulosController extends Controller
             $statistics = DB::table('articulos')
                 ->join('categorias', 'articulos.id_categoria', '=', 'categorias.id')
                 ->select('categorias.nombre as categoria', DB::raw('count(*) as total'))
+                ->where('categorias.estado', 1)
                 ->where('articulos.is_delete', false)
                 ->where('articulos.estado', 1)
                 ->groupBy('categorias.nombre')
@@ -281,6 +282,7 @@ class ArticulosController extends Controller
                     'categorias.nombre as categoria',
                     DB::raw('SUM(productos_facturas.valor_total) as total')
                 )
+                ->where('categorias.estado', 1)
                 ->groupBy('categorias.nombre')
                 ->get();
 
