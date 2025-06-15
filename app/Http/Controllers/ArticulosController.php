@@ -36,6 +36,9 @@ class ArticulosController extends Controller
             if ($request->input('state') != 2) {
                 $products = $products->where('estado', (int)$request->input('state'));
             }
+            if ($request->filled('category_id')) {
+                $products->where('id_categoria', $request->input('category_id'));
+            }
             $products = $products->where('is_delete', false)->orderBy('created_at', 'desc')->paginate($request->input('size'));
 
             return response()->json([
@@ -246,15 +249,31 @@ class ArticulosController extends Controller
     public function getStatisticsOfCategoriesByProduct(Request $request)
     {
         try {
-            $statistics = DB::table('articulos')
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $query = DB::table('articulos')
                 ->join('categorias', 'articulos.id_categoria', '=', 'categorias.id')
                 ->select('categorias.nombre as categoria', DB::raw('count(*) as total'))
                 ->where('categorias.estado', 1)
                 ->where('articulos.is_delete', false)
-                ->where('articulos.estado', 1)
-                ->groupBy('categorias.nombre')
-                ->get();
-            $total_products = Articulo::where('is_delete', false)->where('estado', 1)->count();
+                ->where('articulos.estado', 1);
+
+            if ($startDate && $endDate) {
+                $query->whereDate('articulos.created_at', '>=', $startDate)
+                    ->whereDate('articulos.created_at', '<=', $endDate);
+            }
+
+            $statistics = $query->groupBy('categorias.nombre')->get();
+
+            $totalQuery = Articulo::where('is_delete', false)->where('estado', 1);
+
+            if ($startDate && $endDate) {
+                $totalQuery->whereDate('created_at', '>=', $startDate)
+                    ->whereDate('created_at', '<=', $endDate);
+            }
+
+            $total_products = $totalQuery->count();
 
             return response()->json([
                 'is_error' => false,
@@ -267,26 +286,42 @@ class ArticulosController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
-                'message' => 'Los productos no se muestran'
-            ]);
+                'message' => 'Los productos no se muestran',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
     public function getStatisticsOfCategoriesSellsByProduct(Request $request)
     {
         try {
-            $statistics = DB::table('productos_facturas')
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+
+            $query = DB::table('productos_facturas')
                 ->join('articulos', 'productos_facturas.id_producto', '=', 'articulos.id')
                 ->join('categorias', 'articulos.id_categoria', '=', 'categorias.id')
                 ->select(
                     'categorias.nombre as categoria',
                     DB::raw('SUM(productos_facturas.valor_total) as total')
                 )
-                ->where('categorias.estado', 1)
-                ->groupBy('categorias.nombre')
-                ->get();
+                ->where('categorias.estado', 1);
 
-            $total_products = Articulo::count();
+            if ($startDate && $endDate) {
+                $query->whereDate('productos_facturas.created_at', '>=', $startDate)
+                    ->whereDate('productos_facturas.created_at', '<=', $endDate);
+            }
+
+            $statistics = $query->groupBy('categorias.nombre')->get();
+
+            $productCountQuery = DB::table('productos_facturas');
+
+            if ($startDate && $endDate) {
+                $productCountQuery->whereDate('created_at', '>=', $startDate)
+                    ->whereDate('created_at', '<=', $endDate);
+            }
+
+            $total_products = $productCountQuery->distinct('id_producto')->count('id_producto');
 
             return response()->json([
                 'is_error' => false,
@@ -299,8 +334,9 @@ class ArticulosController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
-                'message' => 'Los productos no se muestran'
-            ]);
+                'message' => 'Los productos no se muestran',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
