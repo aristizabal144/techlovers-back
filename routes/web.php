@@ -7,6 +7,7 @@ use App\Http\Controllers\ArticulosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\AlmacenesController;
 use App\Http\Controllers\GastosController;
+use App\Http\Controllers\AbonosValeController;
 
 
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
@@ -101,6 +102,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/abonos', 'AbonosController@create');
     $router->post('/abonos/delete', 'AbonosController@delete');
     $router->put('/abonos/{id}', 'AbonosController@update');
+
+    // ABONOS VALES
+    $router->get('/abonos-vales', 'AbonosValeController@index');
+    $router->post('/abonos-vales', 'AbonosValeController@create');
 
     // DASHBOARD
     $router->get('/dashboard/return-bullet', 'FacturaController@searchBulletInformation');
