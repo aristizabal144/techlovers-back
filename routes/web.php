@@ -78,6 +78,15 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->put('/quote', 'CotizacionController@check');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
 
+    // CONFIRMACIONES
+    $router->get('/confirmation/confirmation-search', 'ConfirmationController@searchByParams');
+    $router->get('/confirmation/{id}', 'ConfirmationController@show');
+    $router->get('/confirmation', 'ConfirmationController@index');
+    $router->put('/confirmation/{id}', 'ConfirmationController@update');
+    $router->post('/confirmation', 'ConfirmationController@create');
+    $router->put('/confirmation', 'ConfirmationController@check');
+    $router->delete('/confirmation/{id}', 'ConfirmationController@destroy');
+
     // FACTURAS
     $router->get('/invoice/invoice-date', 'FacturaController@searchByDate');
     $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
