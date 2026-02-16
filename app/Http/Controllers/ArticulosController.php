@@ -121,7 +121,7 @@ class ArticulosController extends Controller
             $products->manifiestsId = $request->manifiestsId;
             $products->numberPageManifiests = $request->numberPageManifiests;
             $products->descripcion = $request->descripcion;
-            $products->urlImagen = $request->imageAws;
+            $products->urlImagen = $request->imageAwsreal;
 
             $products->save();
 
@@ -240,6 +240,43 @@ class ArticulosController extends Controller
                 'is_error' => true,
                 'message' => 'Los productos no se muestran'
             ]);
+        }
+    }
+
+    public function uploadImage(Request $request)
+    {
+        try {
+
+            $image = $request->file('image');
+            
+            if (!$image->isValid()) {
+                return response()->json([
+                    'is_error' => true,
+                    'message' => 'El archivo de imagen no es válido'
+                ], 400);
+            }
+
+            $product = $request->input('product');
+            $extension = $image->getClientOriginalExtension();
+            $fileName = $product . '.' . 'jpg';
+
+            $s3 = \Storage::disk('s3');
+            $s3->put($fileName, file_get_contents($image), 'public');
+
+            $url = $s3->url($fileName);
+
+            return response()->json([
+                'is_error' => false,
+                'message' => 'Imagen subida exitosamente',
+                'url' => $url,
+                'file_name' => $fileName
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'is_error' => true,
+                'message' => 'Error al subir la imagen: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

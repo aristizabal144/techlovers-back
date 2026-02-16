@@ -135,6 +135,9 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->get('/storage', 'FacturaContabilidadController@storageGet');
     $router->post('/storage', 'FacturaContabilidadController@storageSave');
 
+    //IMAGES
+    $router->post('/upload-image', 'ArticulosController@uploadImage');
+
     //MANIFIESTOS
     $router->get('/manifests', 'ManifiestosController@index');
     $router->post('/manifests', 'ManifiestosController@create');
