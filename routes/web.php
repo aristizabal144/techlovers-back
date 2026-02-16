@@ -7,6 +7,7 @@ use App\Http\Controllers\ArticulosController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\AlmacenesController;
 use App\Http\Controllers\GastosController;
+use App\Http\Controllers\AbonosValeController;
 
 
 $router->post('login', ['as' => 'login', 'uses' => 'UsuariosController@login']);
@@ -34,6 +35,8 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
 
     $router->get('/product/getCatalog', 'ArticulosController@getCatalog');
     $router->get('/product/get-inventory', 'ArticulosController@getInventaryTotal');
+    $router->get('/product/get-statistics', 'ArticulosController@getStatisticsOfCategoriesByProduct');
+    $router->get('/product/get-statistics-sells', 'ArticulosController@getStatisticsOfCategoriesSellsByProduct');
     $router->get('/product/product-search', 'ArticulosController@searchByParams');
     $router->get('/product', 'ArticulosController@index');
     $router->get('/product/{id}', 'ArticulosController@show');
@@ -63,7 +66,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/store', 'AlmacenesController@create');
     $router->put('/store/{id}', 'AlmacenesController@update');
     $router->delete('/store/{id}', 'AlmacenesController@destroy');
-    
+
 
 
     // COTIZACIONES
@@ -75,6 +78,15 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->put('/quote', 'CotizacionController@check');
     $router->delete('/quote/{id}', 'CotizacionController@destroy');
 
+    // CONFIRMACIONES
+    $router->get('/confirmation/confirmation-search', 'ConfirmationController@searchByParams');
+    $router->get('/confirmation/{id}', 'ConfirmationController@show');
+    $router->get('/confirmation', 'ConfirmationController@index');
+    $router->put('/confirmation/{id}', 'ConfirmationController@update');
+    $router->post('/confirmation', 'ConfirmationController@create');
+    $router->put('/confirmation', 'ConfirmationController@check');
+    $router->delete('/confirmation/{id}', 'ConfirmationController@destroy');
+
     // FACTURAS
     $router->get('/invoice/invoice-date', 'FacturaController@searchByDate');
     $router->get('/invoice/invoice-search', 'FacturaController@searchByParams');
@@ -85,7 +97,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->delete('/invoice/{id}', 'FacturaController@destroy');
     $router->put('/invoice', 'FacturaController@statusChange');
     $router->post('/invoice/xlsx', 'FacturaController@downloadFacturaXLSX');
-    
+
 
      // DEVOLUCIONES
      $router->get('/return', 'DevolucionesController@index');
@@ -99,6 +111,10 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/abonos', 'AbonosController@create');
     $router->post('/abonos/delete', 'AbonosController@delete');
     $router->put('/abonos/{id}', 'AbonosController@update');
+
+    // ABONOS VALES
+    $router->get('/abonos-vales', 'AbonosValeController@index');
+    $router->post('/abonos-vales', 'AbonosValeController@create');
 
     // DASHBOARD
     $router->get('/dashboard/return-bullet', 'FacturaController@searchBulletInformation');
@@ -129,7 +145,7 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->post('/vales', 'ValesController@create');
     $router->delete('/vales/{id}', 'ValesController@delete');
     $router->post('/vales/change-status', 'ValesController@changeStatus');
-    
+
 
     //STORAGE
     $router->get('/storage', 'FacturaContabilidadController@storageGet');
@@ -141,5 +157,5 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
     //MANIFIESTOS
     $router->get('/manifests', 'ManifiestosController@index');
     $router->post('/manifests', 'ManifiestosController@create');
-    
+
 });

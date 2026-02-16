@@ -15,6 +15,7 @@ class Vale extends Model {
     'fecha',
     'fecha_pago',
     'valor',
+    'faltante_pago',
     'id_usuario',
     'estado'
   ];
@@ -22,5 +23,5 @@ class Vale extends Model {
   public function encargado() {
       return $this->belongsTo(User::class, 'id_usuario', 'id');
   }
-  
+
 }

@@ -20,7 +20,7 @@ class CreateArticulosTable extends Migration
             $table->integer('valor_venta');
             $table->integer('cantidad');
             $table->integer('manifiestsId');
-            $table->integer('numberPageManifiests');
+            $table->string('numberPageManifiests');
             $table->integer('cantidad_contabilidad');
             $table->boolean('estado');
             $table->text('descripcion');

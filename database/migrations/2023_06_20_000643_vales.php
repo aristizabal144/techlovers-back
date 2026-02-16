@@ -13,6 +13,7 @@ class Vales extends Migration
             $table->date('fecha');
             $table->date('fecha_pago')->nullable();
             $table->integer('valor');
+            $table->integer('faltante_pago');
             $table->unsignedBigInteger('id_usuario');
             $table->enum('estado', array('pagado', 'pendiente'));
             $table->timestamps();

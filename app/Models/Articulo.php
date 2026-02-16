@@ -28,4 +28,8 @@ class Articulo extends Model
         'urlImagen',
         'is_delete'
     ];
+
+    public function manifiesto() {
+        return $this->belongsTo(Manifiesto::class, 'manifiestsId', 'id');
+    }
 }

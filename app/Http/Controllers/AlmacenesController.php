@@ -128,11 +128,24 @@ class AlmacenesController extends Controller
     {
         try {
             $input = $request->input('input');
-            $stores = Almacen::with('cliente')->where('nombre', 'like', "%$input%")
-                ->orWhere('nit', 'like', "%$input%")
-                ->orWhere('encargado', 'like', "%$input%")
-                ->orderBy('created_at', 'desc')
-                ->paginate($request->input('size'));
+            $size = $request->input('size', 50);
+            $ciudad = $request->input('ciudad');
+
+            $query = Almacen::with('cliente');
+
+            if ($input) {
+                $query->where(function ($q) use ($input) {
+                    $q->where('nombre', 'like', "%$input%")
+                        ->orWhere('nit', 'like', "%$input%")
+                        ->orWhere('encargado', 'like', "%$input%");
+                });
+            }
+
+            if ($ciudad) {
+                $query->where('ciudad', $ciudad);
+            }
+
+            $stores = $query->orderBy('created_at', 'desc')->paginate($size);
 
             return response()->json([
                 'is_error' => false,
@@ -142,6 +155,7 @@ class AlmacenesController extends Controller
             throw $e;
         }
     }
+
 
     public function search(Request $request)
     {
