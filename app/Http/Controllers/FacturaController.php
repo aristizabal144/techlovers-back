@@ -15,13 +15,36 @@ class FacturaController extends Controller
     public function index(Request $request)
     {
         try {
-            $factura = Factura::with('productos.producto.manifiesto')->with('cliente')->with('almacen')->with('encargado')->orderBy('created_at', 'desc')->paginate($request->input('size'));
+            $query = Factura::with('productos.producto.manifiesto')
+                ->with('cliente')
+                ->with('almacen')
+                ->with('encargado');
+
+            // Filtro por cliente
+            if ($request->filled('id_cliente')) {
+                $query->where('id_cliente', $request->input('id_cliente'));
+            }
+
+            // Filtro por rango de fechas
+            if ($request->filled('fecha_inicio') && $request->filled('fecha_fin')) {
+                $query->whereDate('fecha', '>=', $request->input('fecha_inicio'))
+                      ->whereDate('fecha', '<=', $request->input('fecha_fin'));
+            }
+
+            // Filtro por referencia (busqueda)
+            if ($request->filled('search')) {
+                $query->where('referencia', 'like', '%' . $request->input('search') . '%');
+            }
+
+            $factura = $query->orderBy('created_at', 'desc')->paginate($request->input('size'));
+
             return response()->json([
                 'is_error' => false,
                 'message' => 'Las facturas se muestran',
                 'data' => $factura
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'Las facturas no se muestran',
@@ -73,7 +96,8 @@ class FacturaController extends Controller
                 'is_error' => false,
                 'message' => 'La factura fue registrado de manera correcta',
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             throw $e;
         }
@@ -89,7 +113,8 @@ class FacturaController extends Controller
                 'message' => 'La factura seleccionada, se ha encontrado',
                 'data' => $factura
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return response()->json([
                 'is_error' => true,
                 'message' => 'La factura seleccionada NO, se ha encontrado'
@@ -133,7 +158,8 @@ class FacturaController extends Controller
             $abono->save();
 
             DB::commit();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'is_error' => true,
@@ -160,7 +186,8 @@ class FacturaController extends Controller
                 'is_error' => false,
                 'message' => 'La factura se ha eliminado correctamente',
             ]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             DB::rollback();
             return response()->json([
                 'is_error' => true,
@@ -180,7 +207,8 @@ class FacturaController extends Controller
                 ->paginate($request->input('size'));
 
             return response()->json($facturas);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw $e;
         }
     }
@@ -188,24 +216,25 @@ class FacturaController extends Controller
     public function searchByDate(Request $request)
     {
         try {
-            $desde = $request->input('from');
-            $hasta = $request->input('to');
+            $desde = $request->input('fecha_inicio');
+            $hasta = $request->input('fecha_fin');
 
 
             $facturas = Factura::with('cliente')->with('almacen')->with('encargado')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->get();
 
 
             return response()->json([
-              'is_error' => false,
-              'message' => 'Se obtienen las facturas de manera exitosa',
-              'data' => $facturas,
-              'total_facturas' => Factura::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('total')
+                'is_error' => false,
+                'message' => 'Se obtienen las facturas de manera exitosa',
+                'data' => $facturas,
+                'total_facturas' => Factura::whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->orderBy('created_at', 'desc')->sum('total')
             ]);
-        } catch (\Exception $e) {
-          return response()->json([
-            'is_error' => $e,
-            'message' => 'Hubo un error obteniendo las facturas'
-          ]);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'is_error' => $e,
+                'message' => 'Hubo un error obteniendo las facturas'
+            ]);
         }
     }
 
@@ -226,7 +255,8 @@ class FacturaController extends Controller
 
 
             return response()->json(['facturas_pagadas' => $facturasPagadas, 'cartera_pendiente' => $cartera]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw $e;
         }
     }
@@ -237,18 +267,20 @@ class FacturaController extends Controller
             $desde = $request->input('from');
             $hasta = $request->input('to');
 
-            $abonosEfectivo = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','efectivo')->get();
-            $abonosEfectivoTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','efectivo')->sum('valor');
-            $abonosTransferencia = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','transferencia')->get();
-            $abonosTransferenciaTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado','transferencia')->sum('valor');
+            $abonosEfectivo = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado', 'efectivo')->get();
+            $abonosEfectivoTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado', 'efectivo')->sum('valor');
+            $abonosTransferencia = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado', 'transferencia')->get();
+            $abonosTransferenciaTotal = Abonos::with('factura')->whereDate('fecha', '>=', $desde)->whereDate('fecha', '<=', $hasta)->where('estado', 'transferencia')->sum('valor');
 
             return response()->json(['efectivo' => $abonosEfectivo, 'efectivoTotal' => $abonosEfectivoTotal, 'transferencia' => $abonosTransferencia, 'transferenciaTotal' => $abonosTransferenciaTotal]);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             throw $e;
         }
     }
 
-    public function downloadFacturaXLSX(Request $request){
+    public function downloadFacturaXLSX(Request $request)
+    {
         try {
 
             $productos = $request->input('productos');
@@ -259,8 +291,8 @@ class FacturaController extends Controller
 
             foreach ($productos as $producto) {
                 $porcentaje = 0.4;
-                $porcentajeValor = $producto['valor_total']*$porcentaje;
-                $value = [$producto['referencia'], $producto['nombre'], $producto['cantidad'], $producto['valor_unidad'], $producto['valor_total'], $porcentaje, $porcentajeValor, $porcentajeValor/$producto['cantidad'], ($porcentajeValor/$producto['cantidad'])/1.19];
+                $porcentajeValor = $producto['valor_total'] * $porcentaje;
+                $value = [$producto['referencia'], $producto['nombre'], $producto['cantidad'], $producto['valor_unidad'], $producto['valor_total'], $porcentaje, $porcentajeValor, $porcentajeValor / $producto['cantidad'], ($porcentajeValor / $producto['cantidad']) / 1.19];
                 array_push($data, $value);
             }
 
@@ -278,7 +310,8 @@ class FacturaController extends Controller
             return response($csvContent, 200, $headers);
 
 
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             return $e;
             return response()->json([
                 'is_error' => true,
