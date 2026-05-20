@@ -262,15 +262,17 @@ class ArticulosController extends Controller
             $product = $request->input('product');
             $extension = $image->getClientOriginalExtension();
             $fileName = $product . '.' . 'jpg';
+            $s3Path = 'TECHLOVERS-WEB/' . $fileName;
 
             $s3 = \Storage::disk('s3');
-            $s3->put($fileName, file_get_contents($image), 'public');
+            $s3->put($s3Path, file_get_contents($image), 'public');
 
-            $url = $s3->url($fileName);
+            $url = $s3->url($s3Path);
 
             return response()->json([
                 'is_error' => false,
                 'message' => 'Imagen subida exitosamente',
+                'msj' => $url,
                 'url' => $url,
                 'file_name' => $fileName
             ]);
